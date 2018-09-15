@@ -1,5 +1,7 @@
 package model;
 
+import utils.Coordenada;
+
 /**
  *
  * @author Avell

@@ -4,13 +4,16 @@ import controller.ControllerMalhaViaria;
 import controller.MalhaViariaController;
 import controller.Observador;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -20,6 +23,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumnModel;
+import utils.Coordenada;
 
 /**
  *
@@ -104,7 +108,7 @@ public class TelaPrincipal extends JFrame implements Observador {
         jbIniciarSimulacao.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.criarMalhaViaria();
+                tableModel.criarTabuleiro();
             }
         });
     }
@@ -115,7 +119,7 @@ public class TelaPrincipal extends JFrame implements Observador {
     }
 
     @Override
-    public void notificaCriacaoDeMalha(int tamanhoX, int tamanhoY) {
+    public void notificaCriacaoDeMalha(int tamanhoX, int tamanhoY, List<Coordenada[]> vias) {
         MalhaViariaCellRenderer malhaViariaCellRenderer = new MalhaViariaCellRenderer();
         jtbMalhaViaria.setDefaultRenderer(Object.class, malhaViariaCellRenderer);
         jtbMalhaViaria.setRowHeight(20);
@@ -123,9 +127,27 @@ public class TelaPrincipal extends JFrame implements Observador {
         jtbMalhaViaria.setModel(tableModel);
         tableModel.setSize(tamanhoX, tamanhoY);
 
+        montaVias(vias);
+
         TableColumnModel columnModel = jtbMalhaViaria.getColumnModel();
         for (int i = 0; i < jtbMalhaViaria.getColumnCount(); i++) {
             columnModel.getColumn(i).setPreferredWidth(20);
+        }
+
+    }
+
+    private void montaVias(List<Coordenada[]> vias) {
+        for (Coordenada[] via : vias) {
+            for (Coordenada coordenada : via) {
+                JLabel label = new JLabel();
+                label.setOpaque(true);
+                label.setBackground(Color.GRAY);
+                
+                jtbMalhaViaria.add(label);
+                tableModel.setValueAt(label, coordenada.getY(), coordenada.getX());
+                
+                jtbMalhaViaria.repaint();
+            }
         }
     }
 

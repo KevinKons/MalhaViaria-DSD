@@ -1,7 +1,7 @@
 
 import java.io.IOException;
 import model.Campo;
-import model.Coordenada;
+import utils.Coordenada;
 import model.fabricaDeMalha.FabricaDeMalha;
 import org.junit.Before;
 import org.junit.Test;

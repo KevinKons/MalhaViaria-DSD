@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import model.Campo;
-import model.Coordenada;
+import utils.Coordenada;
 import model.MalhaViaria;
 import model.OrientacaoGeografica;
 import model.Via;
