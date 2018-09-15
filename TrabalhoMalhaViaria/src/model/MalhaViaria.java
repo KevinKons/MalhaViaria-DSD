@@ -25,6 +25,15 @@ public class MalhaViaria {
     public List<Via> getVias() {
         return vias;
     }
+
+    public int getTamanhoX() {
+        return tamanhoX;
+    }
+
+    public int getTamanhoY() {
+        return tamanhoY;
+    }
+    
     
     
 }

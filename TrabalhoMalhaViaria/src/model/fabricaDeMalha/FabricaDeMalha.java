@@ -12,9 +12,19 @@ import model.Via;
 
 public class FabricaDeMalha extends FabricaAbstrataDeMalha {
 
+    private static FabricaDeMalha instance;
+    public static FabricaDeMalha getInstance() {
+        if(instance == null)
+            instance = new FabricaDeMalha();
+        
+        return instance;
+    }
+    
+    private FabricaDeMalha() {}
+    
     @Override
     public MalhaViaria criarMalha(String nomeArquivo) throws FileNotFoundException, IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(nomeArquivo));
+        BufferedReader reader = new BufferedReader(new FileReader(nomeArquivo + ".txt"));
 
         MalhaViaria malhaViaria = new MalhaViaria();
         int i = 0;

@@ -20,7 +20,7 @@ public class TestaFabricaDeMalha {
     
     @Before
     public void setUp() {
-        fabricaDeMalha = new FabricaDeMalha();
+        fabricaDeMalha = FabricaDeMalha.getInstance();
     }
     
     @Test
