@@ -9,6 +9,17 @@ public class MalhaViaria {
     private int tamanhoX;
     private int tamanhoY;
     private List<Via> vias = new ArrayList<>(); 
+    private int qntVeiculos = 0;
+    
+    private static MalhaViaria instance;
+    public static MalhaViaria getInstance() {
+        if(instance == null) 
+            instance = new MalhaViaria();
+        
+        return instance;
+    }
+    
+    private MalhaViaria() {}
     
     public void setTamanhoX(int tamanhoX) {
         this.tamanhoX = tamanhoX;
@@ -32,6 +43,18 @@ public class MalhaViaria {
 
     public int getTamanhoY() {
         return tamanhoY;
+    }
+
+    public void veiculoEntrouNaMalha() {
+        qntVeiculos++;
+    }
+    
+    public void veiculoSaiuDaMalha() {
+        qntVeiculos--;
+    }
+
+    public int getQntVeiculos() {
+        return qntVeiculos;
     }
     
     

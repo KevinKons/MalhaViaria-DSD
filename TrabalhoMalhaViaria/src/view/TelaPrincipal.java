@@ -23,7 +23,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumnModel;
-import utils.Coordenada;
+import model.Campo;
 
 /**
  *
@@ -119,7 +119,7 @@ public class TelaPrincipal extends JFrame implements Observador {
     }
 
     @Override
-    public void notificaCriacaoDeMalha(int tamanhoX, int tamanhoY, List<Coordenada[]> vias) {
+    public void notificaCriacaoDeMalha(int tamanhoX, int tamanhoY, List<Campo[]> vias) {
         MalhaViariaCellRenderer malhaViariaCellRenderer = new MalhaViariaCellRenderer();
         jtbMalhaViaria.setDefaultRenderer(Object.class, malhaViariaCellRenderer);
         jtbMalhaViaria.setRowHeight(20);
@@ -136,19 +136,35 @@ public class TelaPrincipal extends JFrame implements Observador {
 
     }
 
-    private void montaVias(List<Coordenada[]> vias) {
-        for (Coordenada[] via : vias) {
-            for (Coordenada coordenada : via) {
+    private void montaVias(List<Campo[]> vias) {
+        for (Campo[] via : vias) {
+            for (Campo campo : via) {
+                campo.addObservador(this);
+
                 JLabel label = new JLabel();
                 label.setOpaque(true);
                 label.setBackground(Color.GRAY);
-                
+
                 jtbMalhaViaria.add(label);
-                tableModel.setValueAt(label, coordenada.getY(), coordenada.getX());
-                
+                tableModel.setValueAt(label, campo.getCoordenada().getY(), campo.getCoordenada().getX());
+
                 jtbMalhaViaria.repaint();
             }
         }
+    }
+
+    @Override
+    public void notificaCampoOcupado(int x, int y) {
+        JLabel campo = (JLabel) tableModel.getValueAt(y, x);
+        campo.setBackground(Color.red);
+        jtbMalhaViaria.repaint();
+    }
+
+    @Override
+    public void notificaCampoLivre(int x, int y) {
+        JLabel campo = (JLabel) tableModel.getValueAt(y, x);
+        campo.setBackground(Color.GRAY);
+        jtbMalhaViaria.repaint();
     }
 
 }

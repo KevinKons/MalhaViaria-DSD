@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 import model.Campo;
-import utils.Coordenada;
+import model.CampoFinal;
+import model.Coordenada;
 import model.MalhaViaria;
 import model.OrientacaoGeografica;
 import model.Via;
@@ -13,20 +15,23 @@ import model.Via;
 public class FabricaDeMalha extends FabricaAbstrataDeMalha {
 
     private static FabricaDeMalha instance;
+
     public static FabricaDeMalha getInstance() {
-        if(instance == null)
+        if (instance == null) {
             instance = new FabricaDeMalha();
-        
+        }
+
         return instance;
     }
-    
-    private FabricaDeMalha() {}
-    
+
+    private FabricaDeMalha() {
+    }
+
     @Override
     public MalhaViaria criarMalha(String nomeArquivo) throws FileNotFoundException, IOException {
         BufferedReader reader = new BufferedReader(new FileReader(nomeArquivo + ".txt"));
 
-        MalhaViaria malhaViaria = new MalhaViaria();
+        MalhaViaria malhaViaria = MalhaViaria.getInstance();
         int i = 0;
         String linha;
         while ((linha = reader.readLine()) != null) {
@@ -46,6 +51,7 @@ public class FabricaDeMalha extends FabricaAbstrataDeMalha {
                 malhaViaria.addVia(via);
             }
         }
+        defineProximasVias(malhaViaria.getVias());
         return malhaViaria;
     }
 
@@ -63,10 +69,13 @@ public class FabricaDeMalha extends FabricaAbstrataDeMalha {
         Campo campoInicio = new Campo(new Coordenada(Integer.parseInt(coordenadas[0]),
                 Integer.parseInt(coordenadas[1])));
         via.getCampos()[0] = campoInicio;
-        
+        campoInicio.setVia(via);
 
-        via.getCampos()[via.getTamanho() - 1] = new Campo(new Coordenada(Integer.parseInt(coordenadas[2]),
+        CampoFinal campoFinal = new CampoFinal(new Coordenada(Integer.parseInt(coordenadas[2]),
                 Integer.parseInt(coordenadas[3])));
+        via.getCampos()[via.getTamanho() - 1] = campoFinal;
+        campoFinal.setVia(via);
+
     }
 
     private void defineOrientacaoGeografica(Via via) {
@@ -94,6 +103,7 @@ public class FabricaDeMalha extends FabricaAbstrataDeMalha {
             int yDoInicio = via.getCampos()[0].getCoordenada().getY();
             for (int i = 1; i < via.getTamanho() - 1; i++) { //1 pois o inicio já está definido e 2 pq o fim já está definido
                 Campo campo = new Campo(new Coordenada(x, yDoInicio - i));
+                campo.setVia(via);
                 via.getCampos()[i] = campo;
             }
         } else if (via.getOrientacaoGeografica() == OrientacaoGeografica.SUL) {
@@ -101,6 +111,7 @@ public class FabricaDeMalha extends FabricaAbstrataDeMalha {
             int yDoInicio = via.getCampos()[0].getCoordenada().getY();
             for (int i = 1; i < via.getTamanho() - 1; i++) { //1 pois o inicio já está definido e 2 pq o fim já está definido
                 Campo campo = new Campo(new Coordenada(x, yDoInicio + i));
+                campo.setVia(via);
                 via.getCampos()[i] = campo;
             }
         } else if (via.getOrientacaoGeografica() == OrientacaoGeografica.OESTE) {
@@ -108,6 +119,7 @@ public class FabricaDeMalha extends FabricaAbstrataDeMalha {
             int y = via.getCampos()[0].getCoordenada().getY();
             for (int i = 1; i < via.getTamanho() - 1; i++) { //1 pois o inicio já está definido e 2 pq o fim já está definido
                 Campo campo = new Campo(new Coordenada(xDoInicio - i, y));
+                campo.setVia(via);
                 via.getCampos()[i] = campo;
             }
         } else if (via.getOrientacaoGeografica() == OrientacaoGeografica.LESTE) {
@@ -115,14 +127,29 @@ public class FabricaDeMalha extends FabricaAbstrataDeMalha {
             int y = via.getCampos()[0].getCoordenada().getY();
             for (int i = 1; i < via.getTamanho() - 1; i++) { //1 pois o inicio já está definido e 2 pq o fim já está definido
                 Campo campo = new Campo(new Coordenada(xDoInicio + i, y));
+                campo.setVia(via);
                 via.getCampos()[i] = campo;
             }
         }
     }
 
     private void defineProximos(Via via) {
-        for(int i = 0; i < via.getTamanho() - 1; i++) {
+        for (int i = 0; i < via.getTamanho() - 1; i++) {
             via.getCampos()[i].setProximo(via.getCampos()[i + 1]);
+        }
+    }
+
+    private void defineProximasVias(List<Via> vias) {
+        for (Via viaAtual : vias) {
+            Coordenada ultimo = viaAtual.getCampos()[viaAtual.getTamanho() - 1].getCoordenada();
+            for (Via viaOutra : vias) {
+                Coordenada primeiro = viaOutra.getCampos()[0].getCoordenada();
+                if (ultimo.getX() == primeiro.getX() && ultimo.getY() == primeiro.getY()) {
+                    System.out.println(ultimo.toString());
+                    System.out.println(primeiro.toString());
+                    viaAtual.addViaSeguintes(viaOutra);
+                }
+            }
         }
     }
 }

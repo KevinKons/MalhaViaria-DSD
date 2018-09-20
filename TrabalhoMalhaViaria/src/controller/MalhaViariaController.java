@@ -7,13 +7,15 @@ import model.Campo;
 import model.MalhaViaria;
 import model.Via;
 import model.fabricaDeMalha.FabricaDeMalha;
-import utils.Coordenada;
+import model.Coordenada;
+import model.InsereVeiculo;
+import model.Veiculo;
 
 public class MalhaViariaController implements ControllerMalhaViaria {
 
     private List<Observador> observadores = new ArrayList<>();
     private MalhaViaria malhaViaria;
-    private final String[] opcoesDeMalha = {"malha1", "malha2", "malha3", "malha4", "malha5", "malha6", "malha7"};
+    private final String[] opcoesDeMalha = {"malha1", "malha2", "malha3"};
     private int malhaSelecionada;
 
     @Override
@@ -39,12 +41,12 @@ public class MalhaViariaController implements ControllerMalhaViaria {
             ex.printStackTrace();
         }
 
-        List<Coordenada[]> vias = new ArrayList<>();
+        List<Campo[]> vias = new ArrayList<>();
         for (Via via : malhaViaria.getVias()) {
-            Coordenada[] viaRetorno = new Coordenada[via.getTamanho()];
+            Campo[] viaRetorno = new Campo[via.getTamanho()];
             int i = 0;
             for (Campo campo : via.getCampos()) {
-                viaRetorno[i] = campo.getCoordenada();
+                viaRetorno[i] = campo;
                 i++;
             }
             vias.add(viaRetorno);
@@ -52,6 +54,8 @@ public class MalhaViariaController implements ControllerMalhaViaria {
         for (Observador o : observadores) {
             o.notificaCriacaoDeMalha(malhaViaria.getTamanhoX(), malhaViaria.getTamanhoY(), vias);
         }
+        
+        iniciarSimulacaoComSemaforo();
     }
 
     @Override
@@ -63,5 +67,25 @@ public class MalhaViariaController implements ControllerMalhaViaria {
     public void selecionaMalha(int indexMalhaSelecionada) {
         this.malhaSelecionada = indexMalhaSelecionada;
     }
+
+    public void iniciarSimulacaoComSemaforo() {
+        InsereVeiculo insereVeiculo = new InsereVeiculo(buscaCamposDeInsercao(), 1);
+        Thread insereVeiculoThread = new Thread(insereVeiculo);
+        insereVeiculoThread.start();
+    }
+
+    private List<Campo> buscaCamposDeInsercao() {
+        List<Campo> camposDeInsercao = new ArrayList<>();
+        for (Via via : malhaViaria.getVias()) {
+            if (via.getCampos()[0].getCoordenada().getX() == 0
+                    || via.getCampos()[0].getCoordenada().getX() == malhaViaria.getTamanhoX() - 1
+                    || via.getCampos()[0].getCoordenada().getY() == 0
+                    || via.getCampos()[0].getCoordenada().getY() == malhaViaria.getTamanhoY() - 1) {
+                camposDeInsercao.add(via.getCampos()[0]);
+            }
+        }
+        return camposDeInsercao;
+    }
+
 
 }

@@ -1,7 +1,7 @@
 
 import java.io.IOException;
 import model.Campo;
-import utils.Coordenada;
+import model.Coordenada;
 import model.fabricaDeMalha.FabricaDeMalha;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +49,7 @@ public class TestaFabricaDeMalha {
         esperado[5] = c6;
         esperado[6] = c7;
         
-        Campo[] reais = fabricaDeMalha.criarMalha("malha1.txt").getVias().get(4).getCampos();
+        Campo[] reais = fabricaDeMalha.criarMalha("malha1").getVias().get(4).getCampos();
         
         for(Campo c : reais) {
             System.out.println(c.getCoordenada().toString());
