@@ -1,19 +1,19 @@
 package view;
 
-import controller.ControllerMalhaViaria;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableModel;
+import controller.RoadMeshInterfaceController;
 
 /**
  *
  * @author Avell
  */
-public class MalhaViariaTableModel extends DefaultTableModel {
+public class RoadMeshTableModel extends DefaultTableModel {
 
     private JLabel[][] casas;
-    private ControllerMalhaViaria controle;
+    private RoadMeshInterfaceController controle;
 
-    public void setContoller(ControllerMalhaViaria controle) {
+    public void setContoller(RoadMeshInterfaceController controle) {
         this.controle = controle;
     }
     
@@ -48,8 +48,8 @@ public class MalhaViariaTableModel extends DefaultTableModel {
         fireTableStructureChanged();
     }
 
-    public void criarTabuleiro() {
-        controle.criarMalhaViaria();
+    public void criarTabuleiro(int modeSelection, int vehicleMaxAmount, int vehicleSpeed, int vehicleInsertionSpeed) {
+        controle.criarMalhaViaria(modeSelection, vehicleMaxAmount, vehicleSpeed, vehicleInsertionSpeed);
         fireTableRowsInserted(getRowCount(), getRowCount());
     }
 }

@@ -2,24 +2,26 @@ package model;
 
 public class Vehicle implements Runnable {
 
-    private int velocity;
+    private int speed = 500;
     private CellInterface cell;
 
     public Vehicle(int velocity) {
-        this.velocity = velocity;
+        this.speed = velocity;
     }
     
     @Override
     public void run() {
+        RoadMesh roadMesh = RoadMesh.getInstance();
         while(!cell.isExitCell()) {
             cell.advanceVehicle(this);
             try {
-                Thread.sleep(500);
+                Thread.sleep(speed);
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
         }
         cell.setBusy(false);
+        roadMesh.vehicleLogOutMesh();
     }
 
     public CellInterface getCell() {

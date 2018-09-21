@@ -1,4 +1,4 @@
-package model.semaphoreElements;
+package model.synchronizedElements;
 
 import controller.Observer;
 import java.util.ArrayList;

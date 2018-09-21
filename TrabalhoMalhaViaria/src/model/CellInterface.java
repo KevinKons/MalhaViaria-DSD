@@ -1,15 +1,15 @@
 package model;
 
-import controller.Observado;
 import controller.Observer;
 import java.util.ArrayList;
 import java.util.List;
+import controller.Observed;
 
 /**
  *
  * @author Avell
  */
-public abstract class CellInterface implements Observado {
+public abstract class CellInterface implements Observed {
 
     private Coordinate coordinate;
     private boolean busy = false;
@@ -63,7 +63,7 @@ public abstract class CellInterface implements Observado {
     }
 
     @Override
-    public void addObservador(Observer o) {
+    public void addObserver(Observer o) {
         this.observers.add(o);
     }
     

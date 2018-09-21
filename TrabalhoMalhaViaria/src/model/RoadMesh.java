@@ -1,15 +1,19 @@
 package model;
 
+import controller.Observer;
 import java.util.ArrayList;
 import java.util.List;
+import controller.Observed;
 
-public class RoadMesh {
+public class RoadMesh implements Observed {
 
-    private int tamanhoX;
-    private int tamanhoY;
-    private List<Road> vias = new ArrayList<>();
-    private int qntVeiculos = 0;
+    private int XSize;
+    private int YSize;
+    private List<Road> roads = new ArrayList<>();
+    private int vehicleAmount = 0;
+    private int maxVehicleAmount;
     private List<CellInterface> crossRoads = new ArrayList<>();
+    private List<Observer> observers = new ArrayList<>();
 
     private static RoadMesh instance;
 
@@ -21,43 +25,48 @@ public class RoadMesh {
         return instance;
     }
 
-    private RoadMesh() {
-    }
+    private RoadMesh() { }
 
     public void setXSize(int tamanhoX) {
-        this.tamanhoX = tamanhoX;
+        this.XSize = tamanhoX;
     }
 
     public void setYSize(int tamanhoY) {
-        this.tamanhoY = tamanhoY;
+        this.YSize = tamanhoY;
     }
 
-    public void addVia(Road via) {
-        vias.add(via);
+    public void addRoad(Road via) {
+        roads.add(via);
     }
 
     public List<Road> getRoads() {
-        return vias;
+        return roads;
     }
 
     public int getXSize() {
-        return tamanhoX;
+        return XSize;
     }
 
     public int getYSize() {
-        return tamanhoY;
+        return YSize;
     }
 
     public void vehicleLogInMesh() {
-        qntVeiculos++;
+        vehicleAmount++;
+        for(Observer o : observers) {
+            o.notifiesVehicleLogInMesh(vehicleAmount);
+        }
     }
 
-    public void veiculoSaiuDaMalha() {
-        qntVeiculos--;
+    public void vehicleLogOutMesh() {
+        vehicleAmount--;
+        for(Observer o : observers) {
+            o.notifiesVehicleLogOutMesh(vehicleAmount);
+        }
     }
 
     public int getVehiclesAmount() {
-        return qntVeiculos;
+        return vehicleAmount;
     }
 
     public CellInterface searchCrossRoad(Coordinate coordinate) {
@@ -74,6 +83,20 @@ public class RoadMesh {
     
     public List<CellInterface> getCrossRoads() {
         return this.crossRoads;
+    }
+
+    public int getMaxVehicleAmount() {
+        return maxVehicleAmount;
+    }
+    
+    public void setMaxVehicleAmount(int maxVehicleAmount) {
+        this.maxVehicleAmount = maxVehicleAmount;
+    }
+
+
+    @Override
+    public void addObserver(Observer o) {
+        this.observers.add(o);
     }
 
 }

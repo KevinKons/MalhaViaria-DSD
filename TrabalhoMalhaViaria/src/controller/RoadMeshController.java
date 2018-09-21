@@ -3,15 +3,13 @@ package controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import model.semaphoreElements.Cell;
 import model.CellInterface;
-import model.Coordinate;
 import model.RoadMesh;
 import model.Road;
-import model.fabricaDeMalha.SemaphoreRoadMeshFactory;
 import model.InsertVehicle;
+import model.fabricaDeMalha.SynchronizedRoadMeshFactory;
 
-public class MalhaViariaController implements ControllerMalhaViaria {
+public class RoadMeshController implements RoadMeshInterfaceController {
 
     private List<Observer> observadores = new ArrayList<>();
     private RoadMesh roadMesh;
@@ -19,7 +17,7 @@ public class MalhaViariaController implements ControllerMalhaViaria {
     private int malhaSelecionada;
 
     @Override
-    public void addObservador(Observer o) {
+    public void addObserver(Observer o) {
         observadores.add(o);
     }
 
@@ -34,9 +32,10 @@ public class MalhaViariaController implements ControllerMalhaViaria {
     }
 
     @Override
-    public void criarMalhaViaria() {
+    public void criarMalhaViaria(int modeSelection, int vehicleMaxAmount, int vehicleSpeed, int vehicleInsertionSpeed) {
         try {
-            roadMesh = SemaphoreRoadMeshFactory.getInstance().buildRoadMesh(opcoesDeMalha[malhaSelecionada]);
+            roadMesh = SynchronizedRoadMeshFactory.getInstance().buildRoadMesh(opcoesDeMalha[malhaSelecionada]);
+            roadMesh.setMaxVehicleAmount(vehicleMaxAmount);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -55,11 +54,11 @@ public class MalhaViariaController implements ControllerMalhaViaria {
             o.notificaCriacaoDeMalha(roadMesh.getXSize(), roadMesh.getYSize(), roads, roadMesh.getCrossRoads());
         }
         
-        startSimulation();
+        startSimulation(vehicleInsertionSpeed, vehicleSpeed);
     }
 
     @Override
-    public String[] getOpcoesDeMalhas() {
+    public String[] getRoadMeshOptions() {
         return opcoesDeMalha;
     }
 
@@ -68,14 +67,16 @@ public class MalhaViariaController implements ControllerMalhaViaria {
         this.malhaSelecionada = indexMalhaSelecionada;
     }
 
-    public void startSimulation() {
-        InsertVehicle insertVehicle = new InsertVehicle(findInsertionCells(), 20);
+    public void startSimulation(int vehicleInsertionSpeed, int vehicleSpeed) {
+        InsertVehicle insertVehicle = new InsertVehicle(findInsertionCells(), vehicleInsertionSpeed, vehicleSpeed);
         Thread insertVehicleThread = new Thread(insertVehicle);
         insertVehicleThread.start();
 //        CellInterface cell = roadMesh.searchCrossRoad(new Coordinate(7, 6));
 //        cell.setBusy(true);
 //        CellInterface cell = roadMesh.getRoads().get(1).getCells()[0];
 //        cell.setBusy(true);
+//        CellInterface cell1 = roadMesh.getRoads().get(13).getCells()[0];
+//        cell1.setBusy(true);
     }
 
     private List<CellInterface> findInsertionCells() {

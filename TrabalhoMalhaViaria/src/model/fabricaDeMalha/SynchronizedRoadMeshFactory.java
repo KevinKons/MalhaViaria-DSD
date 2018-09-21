@@ -4,29 +4,29 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import model.semaphoreElements.Cell;
+import model.synchronizedElements.Cell;
 import model.CellInterface;
-import model.semaphoreElements.FinalCell;
+import model.synchronizedElements.FinalCell;
 import model.Coordinate;
-import model.semaphoreElements.CrossRoad;
+import model.synchronizedElements.CrossRoad;
 import model.RoadMesh;
 import model.GeographicalOrientation;
 import model.Road;
 import utils.UtilMethods;
 
-public class SemaphoreRoadMeshFactory extends AbstractRoadMeshFactory {
+public class SynchronizedRoadMeshFactory extends AbstractRoadMeshFactory {
 
-    private static SemaphoreRoadMeshFactory instance;
+    private static SynchronizedRoadMeshFactory instance;
 
-    public static SemaphoreRoadMeshFactory getInstance() {
+    public static SynchronizedRoadMeshFactory getInstance() {
         if (instance == null) {
-            instance = new SemaphoreRoadMeshFactory();
+            instance = new SynchronizedRoadMeshFactory();
         }
 
         return instance;
     }
 
-    private SemaphoreRoadMeshFactory() {
+    private SynchronizedRoadMeshFactory() {
     }
 
     @Override
@@ -44,12 +44,12 @@ public class SemaphoreRoadMeshFactory extends AbstractRoadMeshFactory {
                 roadMesh.setYSize(Integer.parseInt(line));
                 i++;
             } else {
-                Road via = new Road();
-                setGeographicalOrientation(via, line.split(";"));
-                defineCamposInicioEFimECruzamento(via, line.split(";"));
-                defineCamposIntermediarios(via);
-                defineProximos(via);
-                roadMesh.addRoad(via);
+                Road road = new Road();
+                setGeographicalOrientation(road, line.split(";"));
+                defineCamposInicioEFimECruzamento(road, line.split(";"));
+                defineCamposIntermediarios(road);
+                defineProximos(road);
+                roadMesh.addRoad(road);
             }
         }
         return roadMesh;

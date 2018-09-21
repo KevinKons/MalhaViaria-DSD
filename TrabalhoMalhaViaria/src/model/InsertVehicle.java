@@ -11,19 +11,21 @@ import java.util.Random;
 public class InsertVehicle implements Runnable {
 
     private List<CellInterface> insertionCells = new ArrayList<>();
-    private int maxVehicleAmount;
+    private int vehicleInsertionSpeed;
+    private final int vehicleSpeed;
 
-    public InsertVehicle(List<CellInterface> insertionCells, int maxVehicleAmount) {
+    public InsertVehicle(List<CellInterface> insertionCells, int vehicleInsertionSpeed, int vehicleSpeed) {
         this.insertionCells = insertionCells;
-        this.maxVehicleAmount = maxVehicleAmount;
+        this.vehicleInsertionSpeed = vehicleInsertionSpeed;
+        this.vehicleSpeed = vehicleSpeed;
     }
 
     @Override
     public void run() {
         RoadMesh roadMesh = RoadMesh.getInstance();
         Random random = new Random();
-        while (roadMesh.getVehiclesAmount() <= maxVehicleAmount) {
-            Vehicle vehicle = new Vehicle(500);
+        while (roadMesh.getVehiclesAmount() < roadMesh.getMaxVehicleAmount()) {
+            Vehicle vehicle = new Vehicle(vehicleSpeed);
 
             CellInterface cell = null;
             while (cell == null) {
@@ -38,9 +40,8 @@ public class InsertVehicle implements Runnable {
             Thread veiculoThread = new Thread(vehicle);
             veiculoThread.start();
             roadMesh.vehicleLogInMesh();
-            System.out.println(roadMesh.getVehiclesAmount());
             try {
-                Thread.sleep(1000);
+                Thread.sleep(vehicleInsertionSpeed);
             } catch (InterruptedException ex) {
                 System.out.println("excecao");
                 ex.printStackTrace();
