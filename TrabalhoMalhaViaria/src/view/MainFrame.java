@@ -43,7 +43,7 @@ public class MainFrame extends JFrame implements Observer {
     private JPanel jpRoadMesh;
     private JPanel jpModeSelection;
     private JPanel jpVehicleSettings;
-    private JPanel jpVehicleCurrentAmount;
+    private JPanel jpInformation;
     private RoadMeshTableModel tableModel;
     private JTable tbRoadMesh;
     private JList jlRoadMeshSelector;
@@ -129,8 +129,9 @@ public class MainFrame extends JFrame implements Observer {
         jpMenu.add(btStartSimulation);
 
         lbVehicleCurrentAmount = new JLabel("Vehicles: ");
-        jpVehicleCurrentAmount = new JPanel(new FlowLayout());
-        jpVehicleCurrentAmount.add(lbVehicleCurrentAmount);
+        jpInformation = new JPanel(new FlowLayout());
+        jpInformation.setBorder(new TitledBorder("Information"));
+        jpInformation.add(lbVehicleCurrentAmount);
 
         jpRoadMesh = new JPanel();
         jpRoadMesh.setBorder(new TitledBorder("Road Mesh"));
@@ -145,7 +146,7 @@ public class MainFrame extends JFrame implements Observer {
 
         container.add(BorderLayout.CENTER, jpRoadMesh);
         container.add(BorderLayout.NORTH, jpMenu);
-        container.add(BorderLayout.EAST, jpVehicleCurrentAmount);
+        container.add(BorderLayout.EAST, jpInformation);
     }
 
     private void initListeners() {

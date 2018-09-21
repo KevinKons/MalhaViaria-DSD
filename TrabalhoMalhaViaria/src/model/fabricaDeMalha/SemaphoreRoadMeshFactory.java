@@ -1,9 +1,11 @@
 package model.fabricaDeMalha;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Scanner;
 import model.semaphoreElements.Cell;
 import model.CellInterface;
 import model.semaphoreElements.FinalCell;
@@ -32,11 +34,12 @@ public class SemaphoreRoadMeshFactory extends AbstractRoadMeshFactory {
     @Override
     public RoadMesh buildRoadMesh(String fileName) throws FileNotFoundException, IOException {
         BufferedReader reader = new BufferedReader(new FileReader(fileName + ".txt"));
-
+        
         RoadMesh roadMesh = RoadMesh.getInstance();
         int i = 0;
         String line;
         while ((line = reader.readLine()) != null) {
+            
             if (i == 0) {
                 roadMesh.setXSize(Integer.parseInt(line));
                 i++;
@@ -45,8 +48,8 @@ public class SemaphoreRoadMeshFactory extends AbstractRoadMeshFactory {
                 i++;
             } else {
                 Road via = new Road();
-                setGeographicalOrientation(via, line.split(";"));
-                defineCamposInicioEFimECruzamento(via, line.split(";"));
+                setGeographicalOrientation(via, line.split("    "));
+                defineCamposInicioEFimECruzamento(via, line.split("     "));
                 defineCamposIntermediarios(via);
                 defineProximos(via);
                 roadMesh.addRoad(via);

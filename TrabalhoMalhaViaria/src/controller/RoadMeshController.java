@@ -13,7 +13,7 @@ public class RoadMeshController implements RoadMeshInterfaceController {
 
     private List<Observer> observadores = new ArrayList<>();
     private RoadMesh roadMesh;
-    private final String[] opcoesDeMalha = {"malha1", "malha2", "malha3"};
+    private final String[] opcoesDeMalha = {"malha1", "malha2", "malha3", "malha4"};
     private int malhaSelecionada;
 
     @Override
