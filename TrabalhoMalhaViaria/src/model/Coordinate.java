@@ -1,11 +1,11 @@
 package model;
 
-public class Coordenada {
+public class Coordinate {
 
     private int x;
     private int y;
 
-    public Coordenada(int x, int y) {
+    public Coordinate(int x, int y) {
         this.x = x;
         this.y = y;
     }
@@ -25,7 +25,7 @@ public class Coordenada {
     
     @Override
     public boolean equals(Object obj) {
-        Coordenada outro = (Coordenada) obj;
+        Coordinate outro = (Coordinate) obj;
         if(this.x == outro.getX() && this.y == outro.getY()) 
             return true;
         

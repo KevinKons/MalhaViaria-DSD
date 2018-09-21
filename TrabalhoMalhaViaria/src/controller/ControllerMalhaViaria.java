@@ -1,5 +1,8 @@
 package controller;
 
+import model.CellInterface;
+import model.Coordinate;
+
 /**
  *
  * @author Avell

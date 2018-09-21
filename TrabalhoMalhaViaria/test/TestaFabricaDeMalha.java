@@ -1,8 +1,8 @@
 
 import java.io.IOException;
-import model.Campo;
-import model.Coordenada;
-import model.fabricaDeMalha.FabricaDeMalha;
+import model.semaphoreElements.Cell;
+import model.Coordinate;
+import model.fabricaDeMalha.SemaphoreRoadMeshFactory;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -13,26 +13,26 @@ import static org.junit.Assert.*;
  */
 public class TestaFabricaDeMalha {
 
-    private FabricaDeMalha fabricaDeMalha;
+    private SemaphoreRoadMeshFactory fabricaDeMalha;
     
     public TestaFabricaDeMalha() {
     }
     
     @Before
     public void setUp() {
-        fabricaDeMalha = FabricaDeMalha.getInstance();
+        fabricaDeMalha = SemaphoreRoadMeshFactory.getInstance();
     }
     
     @Test
     public void testaCriarMalha() throws IOException {
-        Campo[] esperado = new Campo[7];
-        Campo c1 = new Campo(new Coordenada(18, 6));
-        Campo c2 = new Campo(new Coordenada(18, 5));
-        Campo c3 = new Campo(new Coordenada(18, 4));
-        Campo c4 = new Campo(new Coordenada(18, 3));
-        Campo c5 = new Campo(new Coordenada(18, 2));
-        Campo c6 = new Campo(new Coordenada(18, 1));
-        Campo c7 = new Campo(new Coordenada(18, 0));
+        Cell[] esperado = new Cell[7];
+        Cell c1 = new Cell(new Coordinate(18, 6));
+        Cell c2 = new Cell(new Coordinate(18, 5));
+        Cell c3 = new Cell(new Coordinate(18, 4));
+        Cell c4 = new Cell(new Coordinate(18, 3));
+        Cell c5 = new Cell(new Coordinate(18, 2));
+        Cell c6 = new Cell(new Coordinate(18, 1));
+        Cell c7 = new Cell(new Coordinate(18, 0));
         
         c1.setProximo(c2);
         c2.setProximo(c3);
@@ -49,10 +49,10 @@ public class TestaFabricaDeMalha {
         esperado[5] = c6;
         esperado[6] = c7;
         
-        Campo[] reais = fabricaDeMalha.criarMalha("malha1").getVias().get(4).getCampos();
+        Cell[] reais = fabricaDeMalha.buildRoadMesh("malha1").getRoads().get(4).getCells();
         
-        for(Campo c : reais) {
-            System.out.println(c.getCoordenada().toString());
+        for(Cell c : reais) {
+            System.out.println(c.getCoordinate().toString());
         }
         
         assertArrayEquals(esperado, reais);

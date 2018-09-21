@@ -2,7 +2,6 @@ package view;
 
 import controller.ControllerMalhaViaria;
 import controller.MalhaViariaController;
-import controller.Observador;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -23,13 +22,15 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumnModel;
-import model.Campo;
+import model.semaphoreElements.Cell;
+import controller.Observer;
+import model.CellInterface;
 
 /**
  *
  * @author Avell
  */
-public class TelaPrincipal extends JFrame implements Observador {
+public class TelaPrincipal extends JFrame implements Observer {
 
     private ControllerMalhaViaria controller = new MalhaViariaController();
     private JButton jbIniciarSimulacao;
@@ -37,7 +38,7 @@ public class TelaPrincipal extends JFrame implements Observador {
     private JPanel jpMenu;
     private JPanel jpMalhaViaria;
     private MalhaViariaTableModel tableModel;
-    private JTable jtbMalhaViaria;
+    private JTable jtbRoadMesh;
     private JList jlSeletorMalhaViaria;
     private JScrollPane jpScrollPane;
 
@@ -86,9 +87,9 @@ public class TelaPrincipal extends JFrame implements Observador {
         tableModel = new MalhaViariaTableModel();
         tableModel.setContoller(controller);
 
-        jtbMalhaViaria = new JTable();
+        jtbRoadMesh = new JTable();
 
-        jpMalhaViaria.add(jtbMalhaViaria);
+        jpMalhaViaria.add(jtbRoadMesh);
 
         container.add(BorderLayout.CENTER, jpMalhaViaria);
         container.add(BorderLayout.NORTH, jpMenu);
@@ -119,52 +120,75 @@ public class TelaPrincipal extends JFrame implements Observador {
     }
 
     @Override
-    public void notificaCriacaoDeMalha(int tamanhoX, int tamanhoY, List<Campo[]> vias) {
+    public void notificaCriacaoDeMalha(int tamanhoX, int tamanhoY, List<CellInterface[]> road, List<CellInterface> crossRoads) {
         MalhaViariaCellRenderer malhaViariaCellRenderer = new MalhaViariaCellRenderer();
-        jtbMalhaViaria.setDefaultRenderer(Object.class, malhaViariaCellRenderer);
-        jtbMalhaViaria.setRowHeight(20);
+        jtbRoadMesh.setDefaultRenderer(Object.class, malhaViariaCellRenderer);
+        jtbRoadMesh.setRowHeight(20);
 
-        jtbMalhaViaria.setModel(tableModel);
+        jtbRoadMesh.setModel(tableModel);
         tableModel.setSize(tamanhoX, tamanhoY);
 
-        montaVias(vias);
+        setRoads(road);
+        setCrossRoads(crossRoads);
 
-        TableColumnModel columnModel = jtbMalhaViaria.getColumnModel();
-        for (int i = 0; i < jtbMalhaViaria.getColumnCount(); i++) {
+        TableColumnModel columnModel = jtbRoadMesh.getColumnModel();
+        for (int i = 0; i < jtbRoadMesh.getColumnCount(); i++) {
             columnModel.getColumn(i).setPreferredWidth(20);
         }
 
     }
 
-    private void montaVias(List<Campo[]> vias) {
-        for (Campo[] via : vias) {
-            for (Campo campo : via) {
-                campo.addObservador(this);
+    private void setRoads(List<CellInterface[]> roads) {
+        for (CellInterface[] road : roads) {
+            for (CellInterface cell : road) {
+                cell.addObservador(this);
 
                 JLabel label = new JLabel();
                 label.setOpaque(true);
                 label.setBackground(Color.GRAY);
 
-                jtbMalhaViaria.add(label);
-                tableModel.setValueAt(label, campo.getCoordenada().getY(), campo.getCoordenada().getX());
+                jtbRoadMesh.add(label);
+                tableModel.setValueAt(label, cell.getCoordinate().getY(), cell.getCoordinate().getX());
 
-                jtbMalhaViaria.repaint();
+                jtbRoadMesh.repaint();
             }
         }
     }
 
     @Override
-    public void notificaCampoOcupado(int x, int y) {
-        JLabel campo = (JLabel) tableModel.getValueAt(y, x);
-        campo.setBackground(Color.red);
-        jtbMalhaViaria.repaint();
+    public void notifiesBusyCell(int x, int y) {
+        JLabel cell = (JLabel) tableModel.getValueAt(y, x);
+        cell.setBackground(Color.red);
+        jtbRoadMesh.repaint();
     }
 
     @Override
-    public void notificaCampoLivre(int x, int y) {
-        JLabel campo = (JLabel) tableModel.getValueAt(y, x);
-        campo.setBackground(Color.GRAY);
-        jtbMalhaViaria.repaint();
+    public void notifiesFreeCell(int x, int y) {
+        JLabel cell = (JLabel) tableModel.getValueAt(y, x);
+        cell.setBackground(Color.GRAY);
+        jtbRoadMesh.repaint();
+    }
+
+    private void setCrossRoads(List<CellInterface> crossRoads) {
+        for (CellInterface crossRoad : crossRoads) {
+            crossRoad.addObservador(this);
+
+            JLabel label = new JLabel();
+            label.setOpaque(true);
+            label.setBackground(Color.YELLOW);
+
+            jtbRoadMesh.add(label);
+            tableModel.setValueAt(label, crossRoad.getCoordinate().getY(), crossRoad.getCoordinate().getX());
+
+            jtbRoadMesh.repaint();
+        }
+    }
+
+    @Override
+    public void notifiesFreeCrossRoad(int x, int y) {
+        JLabel cell = (JLabel) tableModel.getValueAt(y, x);
+        cell.setBackground(Color.YELLOW);
+        jtbRoadMesh.repaint();
     }
 
 }

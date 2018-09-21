@@ -3,59 +3,59 @@ package controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import model.Campo;
-import model.MalhaViaria;
-import model.Via;
-import model.fabricaDeMalha.FabricaDeMalha;
-import model.Coordenada;
-import model.InsereVeiculo;
-import model.Veiculo;
+import model.semaphoreElements.Cell;
+import model.CellInterface;
+import model.Coordinate;
+import model.RoadMesh;
+import model.Road;
+import model.fabricaDeMalha.SemaphoreRoadMeshFactory;
+import model.InsertVehicle;
 
 public class MalhaViariaController implements ControllerMalhaViaria {
 
-    private List<Observador> observadores = new ArrayList<>();
-    private MalhaViaria malhaViaria;
+    private List<Observer> observadores = new ArrayList<>();
+    private RoadMesh roadMesh;
     private final String[] opcoesDeMalha = {"malha1", "malha2", "malha3"};
     private int malhaSelecionada;
 
     @Override
-    public void addObservador(Observador o) {
+    public void addObservador(Observer o) {
         observadores.add(o);
     }
 
     @Override
     public int getQntLinhas() {
-        return malhaViaria.getTamanhoY();
+        return roadMesh.getYSize();
     }
 
     @Override
     public int getQntColunas() {
-        return malhaViaria.getTamanhoX();
+        return roadMesh.getXSize();
     }
 
     @Override
     public void criarMalhaViaria() {
         try {
-            malhaViaria = FabricaDeMalha.getInstance().criarMalha(opcoesDeMalha[malhaSelecionada]);
+            roadMesh = SemaphoreRoadMeshFactory.getInstance().buildRoadMesh(opcoesDeMalha[malhaSelecionada]);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
 
-        List<Campo[]> vias = new ArrayList<>();
-        for (Via via : malhaViaria.getVias()) {
-            Campo[] viaRetorno = new Campo[via.getTamanho()];
+        List<CellInterface[]> roads = new ArrayList<>();
+        for (Road road : roadMesh.getRoads()) {
+            CellInterface[] returnRoads = new CellInterface[road.getSize()];
             int i = 0;
-            for (Campo campo : via.getCampos()) {
-                viaRetorno[i] = campo;
+            for (CellInterface cell : road.getCells()) {
+                returnRoads[i] = cell;
                 i++;
             }
-            vias.add(viaRetorno);
+            roads.add(returnRoads);
         }
-        for (Observador o : observadores) {
-            o.notificaCriacaoDeMalha(malhaViaria.getTamanhoX(), malhaViaria.getTamanhoY(), vias);
+        for (Observer o : observadores) {
+            o.notificaCriacaoDeMalha(roadMesh.getXSize(), roadMesh.getYSize(), roads, roadMesh.getCrossRoads());
         }
         
-        iniciarSimulacaoComSemaforo();
+        startSimulation();
     }
 
     @Override
@@ -68,23 +68,27 @@ public class MalhaViariaController implements ControllerMalhaViaria {
         this.malhaSelecionada = indexMalhaSelecionada;
     }
 
-    public void iniciarSimulacaoComSemaforo() {
-        InsereVeiculo insereVeiculo = new InsereVeiculo(buscaCamposDeInsercao(), 1);
-        Thread insereVeiculoThread = new Thread(insereVeiculo);
-        insereVeiculoThread.start();
+    public void startSimulation() {
+        InsertVehicle insertVehicle = new InsertVehicle(findInsertionCells(), 20);
+        Thread insertVehicleThread = new Thread(insertVehicle);
+        insertVehicleThread.start();
+//        CellInterface cell = roadMesh.searchCrossRoad(new Coordinate(7, 6));
+//        cell.setBusy(true);
+//        CellInterface cell = roadMesh.getRoads().get(1).getCells()[0];
+//        cell.setBusy(true);
     }
 
-    private List<Campo> buscaCamposDeInsercao() {
-        List<Campo> camposDeInsercao = new ArrayList<>();
-        for (Via via : malhaViaria.getVias()) {
-            if (via.getCampos()[0].getCoordenada().getX() == 0
-                    || via.getCampos()[0].getCoordenada().getX() == malhaViaria.getTamanhoX() - 1
-                    || via.getCampos()[0].getCoordenada().getY() == 0
-                    || via.getCampos()[0].getCoordenada().getY() == malhaViaria.getTamanhoY() - 1) {
-                camposDeInsercao.add(via.getCampos()[0]);
+    private List<CellInterface> findInsertionCells() {
+        List<CellInterface> insertionCells = new ArrayList<>();
+        for (Road road : roadMesh.getRoads()) {
+            if (road.getCells()[0].getCoordinate().getX() == 0
+                    || road.getCells()[0].getCoordinate().getX() == roadMesh.getXSize() - 1
+                    || road.getCells()[0].getCoordinate().getY() == 0
+                    || road.getCells()[0].getCoordinate().getY() == roadMesh.getYSize() - 1) {
+                insertionCells.add(road.getCells()[0]);
             }
         }
-        return camposDeInsercao;
+        return insertionCells;
     }
 
 
