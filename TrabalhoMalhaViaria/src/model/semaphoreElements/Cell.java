@@ -18,7 +18,7 @@ public class Cell extends CellInterface {
 
     @Override
     public void advanceVehicle(Vehicle vehicle) {
-        if(!this.next.isBusy()) {
+        if(this.next.isNotBusy()) {
             vehicle.setCell(this.next);
             this.next.setBusy(true);
             super.setBusy(false);

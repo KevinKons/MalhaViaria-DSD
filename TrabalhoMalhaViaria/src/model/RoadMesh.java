@@ -51,21 +51,21 @@ public class RoadMesh implements Observed {
         return YSize;
     }
 
-    public void vehicleLogInMesh() {
+    void vehicleLogInMesh() {
         vehicleAmount++;
         for(Observer o : observers) {
             o.notifiesVehicleLogInMesh(vehicleAmount);
         }
     }
 
-    public void vehicleLogOutMesh() {
+    void vehicleLogOutMesh() {
         vehicleAmount--;
         for(Observer o : observers) {
             o.notifiesVehicleLogOutMesh(vehicleAmount);
         }
     }
 
-    public int getVehiclesAmount() {
+    int getVehiclesAmount() {
         return vehicleAmount;
     }
 
@@ -85,7 +85,7 @@ public class RoadMesh implements Observed {
         return this.crossRoads;
     }
 
-    public int getMaxVehicleAmount() {
+    int getMaxVehicleAmount() {
         return maxVehicleAmount;
     }
     

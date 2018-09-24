@@ -13,11 +13,11 @@ public class RoadMeshTableModel extends DefaultTableModel {
     private JLabel[][] casas;
     private RoadMeshInterfaceController controle;
 
-    public void setContoller(RoadMeshInterfaceController controle) {
+    void setContoller(RoadMeshInterfaceController controle) {
         this.controle = controle;
     }
     
-    public void setSize(int x, int y) {
+    void setSize(int x, int y) {
         casas = new JLabel[x][y];
     }
 
@@ -48,7 +48,7 @@ public class RoadMeshTableModel extends DefaultTableModel {
         fireTableStructureChanged();
     }
 
-    public void criarTabuleiro(int modeSelection, int vehicleMaxAmount, int vehicleSpeed, int vehicleInsertionSpeed) {
+    void criarTabuleiro(int modeSelection, int vehicleMaxAmount, int vehicleSpeed, int vehicleInsertionSpeed) {
         controle.criarMalhaViaria(modeSelection, vehicleMaxAmount, vehicleSpeed, vehicleInsertionSpeed);
         fireTableRowsInserted(getRowCount(), getRowCount());
     }

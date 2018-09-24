@@ -53,7 +53,7 @@ public class CrossRoad extends CellInterface {
         CellInterface cell = null;
         while (cell == null) {
             int randomPosition = random.nextInt(nextCells.size());
-            if (!nextCells.get(randomPosition).isBusy()) {
+            if (nextCells.get(randomPosition).isNotBusy()) {
                 cell = nextCells.get(randomPosition);
             }
         }

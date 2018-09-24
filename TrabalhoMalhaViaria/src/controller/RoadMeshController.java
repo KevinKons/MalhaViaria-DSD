@@ -7,7 +7,7 @@ import model.CellInterface;
 import model.RoadMesh;
 import model.Road;
 import model.InsertVehicle;
-import model.fabricaDeMalha.SynchronizedRoadMeshFactory;
+import model.roadmeshfactory.RoadMeshFactory;
 
 public class RoadMeshController implements RoadMeshInterfaceController {
 
@@ -31,10 +31,18 @@ public class RoadMeshController implements RoadMeshInterfaceController {
         return roadMesh.getXSize();
     }
 
+
+    /**
+     * Create the road mesh
+      * @param modeSelection represents either is mutex or synchronized
+     * @param vehicleMaxAmount represents the max quantity of vehicles
+     * @param vehicleSpeed is the vehicle speed on the road mesh
+     * @param vehicleInsertionSpeed is the delay of vehicle insertion
+     */
     @Override
     public void criarMalhaViaria(int modeSelection, int vehicleMaxAmount, int vehicleSpeed, int vehicleInsertionSpeed) {
         try {
-            roadMesh = SynchronizedRoadMeshFactory.getInstance().buildRoadMesh(opcoesDeMalha[malhaSelecionada]);
+            roadMesh = RoadMeshFactory.getInstance().buildRoadMesh(opcoesDeMalha[malhaSelecionada]);
             roadMesh.setMaxVehicleAmount(vehicleMaxAmount);
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -67,12 +75,17 @@ public class RoadMeshController implements RoadMeshInterfaceController {
         this.malhaSelecionada = indexMalhaSelecionada;
     }
 
-    public void startSimulation(int vehicleInsertionSpeed, int vehicleSpeed) {
+    /**
+     * Start put vehicles on the road mesh
+     */
+    private void startSimulation(int vehicleInsertionSpeed, int vehicleSpeed) {
         InsertVehicle insertVehicle = new InsertVehicle(findInsertionCells(), vehicleInsertionSpeed, vehicleSpeed);
         Thread insertVehicleThread = new Thread(insertVehicle);
         insertVehicleThread.start();
+
 //        CellInterface cell = roadMesh.searchCrossRoad(new Coordinate(7, 6));
 //        cell.setBusy(true);
+        //Try if the vehicle stop on the crossroad.
 //        CellInterface cell = roadMesh.getRoads().get(1).getCells()[0];
 //        cell.setBusy(true);
 //        CellInterface cell1 = roadMesh.getRoads().get(13).getCells()[0];

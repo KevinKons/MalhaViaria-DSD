@@ -11,8 +11,7 @@ public class MalhaViariaCellRenderer extends DefaultTableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value,
             boolean isSelected, boolean hasFocus, int row, int column) {
 
-        JLabel jlb = (JLabel) value;
-        return jlb;
+        return (JLabel) value;
     }
 
 }

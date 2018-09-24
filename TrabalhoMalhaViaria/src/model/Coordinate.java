@@ -26,9 +26,6 @@ public class Coordinate {
     @Override
     public boolean equals(Object obj) {
         Coordinate outro = (Coordinate) obj;
-        if(this.x == outro.getX() && this.y == outro.getY()) 
-            return true;
-        
-        return false;
+        return this.x == outro.getX() && this.y == outro.getY();
     }
 }

@@ -6,5 +6,5 @@ package controller;
  */
 public interface Observed {
 
-    public void addObserver(Observer o);
+    void addObserver(Observer o);
 }

@@ -31,8 +31,8 @@ public abstract class CellInterface implements Observed {
         return this.coordinate;
     }
 
-    public boolean isBusy() {
-        return busy;
+    public boolean isNotBusy() {
+        return !busy;
     }
 
     public void setBusy(boolean busy) {
@@ -48,17 +48,14 @@ public abstract class CellInterface implements Observed {
         this.busy = busy;
     }
 
-    public boolean isExitCell() {
+    boolean isExitCell() {
         if (isFinalCell()) {
             RoadMesh malhaViaria = RoadMesh.getInstance();
-            if (coordinate.getX() == 0
+            return coordinate.getX() == 0
                     || coordinate.getX() == malhaViaria.getXSize() - 1
                     || coordinate.getY() == 0
-                    || coordinate.getY() == malhaViaria.getYSize() - 1) {
-                return true;
-            }
+                    || coordinate.getY() == malhaViaria.getYSize() - 1;
         }
-
         return false;
     }
 
@@ -67,7 +64,7 @@ public abstract class CellInterface implements Observed {
         this.observers.add(o);
     }
     
-    public List<Observer> getObservers() {
+    protected List<Observer> getObservers() {
         return this.observers;
     }
 

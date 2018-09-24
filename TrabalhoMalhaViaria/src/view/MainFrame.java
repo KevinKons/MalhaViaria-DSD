@@ -72,6 +72,12 @@ public class MainFrame extends JFrame implements Observer {
         initListeners();
     }
 
+
+    public static void main(String[] args) {
+        MainFrame tp = new MainFrame();
+        tp.setVisible(true);
+    }
+
     private void initComponents() {
         controller.addObserver(this);
 
@@ -113,7 +119,6 @@ public class MainFrame extends JFrame implements Observer {
         lbInsertionVehicleSpeed = new JLabel("Vehicle insertion speed");
         lbVehicleSpeed = new JLabel("Vehicle speed");
 
-//        lbInsertionVehicleSpeed.setSize(new Dimension(20, 20));
         jpVehicleSettings = new JPanel(new GridLayout(3, 2));
         jpVehicleSettings.setBorder(new TitledBorder("Vehicle Settings"));
         jpVehicleSettings.add(lbVehicleMaxAmount);
@@ -151,35 +156,24 @@ public class MainFrame extends JFrame implements Observer {
 
     private void initListeners() {
         jlRoadMeshSelector.addListSelectionListener(
-                new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                controller.selecionaMalha(jlRoadMeshSelector.getSelectedIndex());
-                btStartSimulation.setEnabled(true);
-            }
-        }
+                e -> {
+                    controller.selecionaMalha(jlRoadMeshSelector.getSelectedIndex());
+                    btStartSimulation.setEnabled(true);
+                }
         );
         
         Observer mainFrame = this;
-        btStartSimulation.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int modeSelection = 0;
-                if (rbtSynchronizedMode.isSelected()) {
-                    modeSelection = 1;
-                }
-                int vehicleInsertionSpeed = Integer.parseInt(tfVehicleInsertionSpeed.getText());
-                int vehicleSpeed = Integer.parseInt(tfVehicleSpeed.getText());
-                int vehicleMaxAmount = Integer.parseInt(tfVehicleMaxAmount.getText());
-                tableModel.criarTabuleiro(modeSelection, vehicleMaxAmount, vehicleSpeed, vehicleInsertionSpeed);
-                RoadMesh.getInstance().addObserver(mainFrame);
+        btStartSimulation.addActionListener(e -> {
+            int modeSelection = 0;
+            if (rbtSynchronizedMode.isSelected()) {
+                modeSelection = 1;
             }
+            int vehicleInsertionSpeed = Integer.parseInt(tfVehicleInsertionSpeed.getText());
+            int vehicleSpeed = Integer.parseInt(tfVehicleSpeed.getText());
+            int vehicleMaxAmount = Integer.parseInt(tfVehicleMaxAmount.getText());
+            tableModel.criarTabuleiro(modeSelection, vehicleMaxAmount, vehicleSpeed, vehicleInsertionSpeed);
+            RoadMesh.getInstance().addObserver(mainFrame);
         });
-    }
-
-    public static void main(String[] args) throws Exception {
-        MainFrame tp = new MainFrame();
-        tp.setVisible(true);
     }
 
     @Override

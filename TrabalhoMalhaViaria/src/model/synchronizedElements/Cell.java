@@ -10,7 +10,7 @@ import model.Vehicle;
  */
 public class Cell extends CellInterface {
 
-    protected CellInterface next;
+    private CellInterface next;
 
     public Cell(Coordinate coordinate) {
         super.setCoordinate(coordinate);
@@ -18,7 +18,7 @@ public class Cell extends CellInterface {
 
     @Override
     public void advanceVehicle(Vehicle vehicle) {
-        if(!this.next.isBusy()) {
+        if(this.next.isNotBusy()) {
             vehicle.setCell(this.next);
             this.next.setBusy(true);
             super.setBusy(false);
@@ -39,17 +39,12 @@ public class Cell extends CellInterface {
     public boolean equals(Object obj) {
         Cell outro = (Cell) obj;
         if (this.next != null && outro.next() != null) {
-            if (super.getCoordinate().equals(outro.getCoordinate())
-                    && this.next.getCoordinate().equals(outro.next().getCoordinate())) {
-                return true;
-            }
+            return super.getCoordinate().equals(outro.getCoordinate())
+                    && this.next.getCoordinate().equals(outro.next().getCoordinate());
         } else {
-            if (super.getCoordinate().equals(outro.getCoordinate())) {
-                return true;
-            }
+            return super.getCoordinate().equals(outro.getCoordinate());
         }
 
-        return false;
     }
 
     @Override

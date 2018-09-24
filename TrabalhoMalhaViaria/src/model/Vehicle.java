@@ -2,7 +2,7 @@ package model;
 
 public class Vehicle implements Runnable {
 
-    private int speed = 500;
+    private int speed;
     private CellInterface cell;
 
     public Vehicle(int velocity) {
