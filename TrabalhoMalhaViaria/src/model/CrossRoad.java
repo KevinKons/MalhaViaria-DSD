@@ -1,4 +1,4 @@
-package model.roadmeshbuilder.products;
+package model;
 
 import controller.Observer;
 import java.util.ArrayList;

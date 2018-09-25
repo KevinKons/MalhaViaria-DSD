@@ -1,12 +1,12 @@
-package model.roadmeshbuilder;
+package model.roadmeshfactory;
 
 import model.CellInterface;
 import model.Coordinate;
 import model.GeographicalOrientation;
 import model.RoadMesh;
-import model.roadmeshbuilder.products.Cell;
-import model.roadmeshbuilder.products.CrossRoad;
-import model.roadmeshbuilder.products.FinalCell;
+import model.Cell;
+import model.CrossRoad;
+import model.FinalCell;
 
 public class RoadBuilder extends RoadBuilderInterface {
 

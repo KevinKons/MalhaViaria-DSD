@@ -1,24 +1,24 @@
-package model.roadmeshbuilder;
+package model.roadmeshfactory;
 
 import model.CellInterface;
 import model.Coordinate;
 import model.GeographicalOrientation;
 import model.Road;
-import model.roadmeshbuilder.products.Cell;
+import model.Cell;
 
 public abstract class RoadBuilderInterface {
 
-    Road road;
+    protected Road road;
 
-    void setRoad(Road road) {
+    public void setRoad(Road road) {
         this.road = road;
     }
 
-    Road getRoad() {
+    public Road getRoad() {
         return road;
     }
 
-    void buildGeographicalOrientation(int[] coordinates) {
+    public void buildGeographicalOrientation( int[] coordinates) {
         Coordinate initialCell = new Coordinate(coordinates[0], coordinates[1]);
         Coordinate finalCell = new Coordinate(coordinates[2], coordinates[3]);
 
@@ -41,7 +41,7 @@ public abstract class RoadBuilderInterface {
 
     public abstract void buildRoadSize(CellInterface initialCell, CellInterface finalCell);
 
-    void buildIntermediateCells() {
+    public void buildIntermediateCells() {
         if (road.getGeographicalOrientation() == GeographicalOrientation.NORTH) {
             int x = road.getCells()[0].getCoordinate().getX();
             int initialY = road.getCells()[0].getCoordinate().getY();
@@ -73,7 +73,7 @@ public abstract class RoadBuilderInterface {
         }
     }
 
-    void setNexts() {
+    public void setNexts() {
         for (int i = 0; i < road.getSize() - 1; i++) {
             road.getCells()[i].addNext(road.getCells()[i + 1]);
         }

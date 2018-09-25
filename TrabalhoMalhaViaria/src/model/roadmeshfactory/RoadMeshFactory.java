@@ -1,10 +1,13 @@
-package model.roadmeshbuilder;
+package model.roadmeshfactory;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
 import model.*;
+import model.Cell;
+import model.CrossRoad;
+import model.FinalCell;
 import utils.UtilMethods;
 
 public class RoadMeshFactory {
