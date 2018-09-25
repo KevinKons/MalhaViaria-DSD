@@ -1,4 +1,4 @@
-package model.roadmeshfactory;
+package model.roadmeshbuilder;
 
 import model.Road;
 

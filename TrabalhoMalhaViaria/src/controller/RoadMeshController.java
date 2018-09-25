@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.*;
-import model.roadmeshfactory.RoadMeshFactory;
+import model.roadmeshbuilder.RoadMeshFactory;
 
 public class RoadMeshController implements RoadMeshInterfaceController {
 

@@ -1,4 +1,8 @@
-package model;
+package model.roadmeshbuilder.products;
+
+import model.CellInterface;
+import model.Coordinate;
+import model.Vehicle;
 
 /**
  *
