@@ -1,10 +1,10 @@
-package model.synchronizedElements;
+package model;
 
 import controller.Observer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
+import java.util.concurrent.Semaphore;
 import model.CellInterface;
 import model.Coordinate;
 import model.Vehicle;
@@ -17,18 +17,25 @@ public class CrossRoad extends CellInterface {
 
     private List<CellInterface> nextCells = new ArrayList<>();
     private CellInterface next = null;
-
+    private Semaphore mutex = new Semaphore(1);
+    
     public CrossRoad(Coordinate coordinate) {
         super.setCoordinate(coordinate);
     }
 
     @Override
-    public synchronized void advanceVehicle(Vehicle vehicle) {
+    public void advanceVehicle(Vehicle vehicle) {
         try {
-            Thread.sleep(500);
+            mutex.acquire();
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
             vehicle.setCell(next);
             next.setBusy(true);
             this.setBusy(false);
+            mutex.release();
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }

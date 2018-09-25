@@ -1,8 +1,4 @@
-package model.synchronizedElements;
-
-import model.CellInterface;
-import model.Coordinate;
-import model.Vehicle;
+package model;
 
 /**
  *
@@ -10,7 +6,7 @@ import model.Vehicle;
  */
 public class Cell extends CellInterface {
 
-    private CellInterface next;
+    protected CellInterface next;
 
     public Cell(Coordinate coordinate) {
         super.setCoordinate(coordinate);
@@ -39,12 +35,17 @@ public class Cell extends CellInterface {
     public boolean equals(Object obj) {
         Cell outro = (Cell) obj;
         if (this.next != null && outro.next() != null) {
-            return super.getCoordinate().equals(outro.getCoordinate())
-                    && this.next.getCoordinate().equals(outro.next().getCoordinate());
+            if (super.getCoordinate().equals(outro.getCoordinate())
+                    && this.next.getCoordinate().equals(outro.next().getCoordinate())) {
+                return true;
+            }
         } else {
-            return super.getCoordinate().equals(outro.getCoordinate());
+            if (super.getCoordinate().equals(outro.getCoordinate())) {
+                return true;
+            }
         }
 
+        return false;
     }
 
     @Override

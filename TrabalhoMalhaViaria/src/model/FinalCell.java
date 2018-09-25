@@ -1,8 +1,4 @@
-package model.semaphoreElements;
-
-import model.CellInterface;
-import model.Coordinate;
-import model.Vehicle;
+package model;
 
 /**
  *
