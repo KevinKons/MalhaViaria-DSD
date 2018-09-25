@@ -4,14 +4,14 @@ public class Road {
  
     private AbstractCell[] cells;
     private int size;
-    private GeographicalOrientation orientacaoGeografica;
+    private GeographicalOrientation geographicalOrientation;
 
     public GeographicalOrientation getGeographicalOrientation() {
-        return orientacaoGeografica;
+        return geographicalOrientation;
     }
 
     public void setGeographicalOrientation(GeographicalOrientation orientacaoGeofrafica) {
-        this.orientacaoGeografica = orientacaoGeofrafica;
+        this.geographicalOrientation = orientacaoGeofrafica;
     }
     
     public int getSize() {

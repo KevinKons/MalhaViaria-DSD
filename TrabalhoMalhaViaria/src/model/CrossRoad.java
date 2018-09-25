@@ -15,7 +15,6 @@ public abstract class CrossRoad extends AbstractCell {
 
     private List<AbstractCell> nextCells = new ArrayList<>();
     protected AbstractCell next = null;
-    private Semaphore mutex = new Semaphore(1);
 
     public CrossRoad(Coordinate coordinate) {
         super.setCoordinate(coordinate);
