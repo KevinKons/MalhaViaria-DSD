@@ -1,10 +1,6 @@
 package model.threadstrategy;
 
-import model.AbstractCell;
-import model.Vehicle;
+interface Strategy {
 
-public interface Strategy {
-
-    public void advanceVehicle(Vehicle vehicle, AbstractCell next, AbstractCell currentCell);
 
 }

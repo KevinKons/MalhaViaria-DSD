@@ -3,7 +3,7 @@ package model;
 public class Vehicle implements Runnable {
 
     private int speed;
-    private AbstractCell cell;
+    private CellInterface cell;
 
     public Vehicle(int velocity) {
         this.speed = velocity;
@@ -24,11 +24,11 @@ public class Vehicle implements Runnable {
         roadMesh.vehicleLogOutMesh();
     }
 
-    public AbstractCell getCell() {
+    public CellInterface getCell() {
         return cell;
     }
 
-    public void setCell(AbstractCell cell) {
+    public void setCell(CellInterface cell) {
         this.cell = cell;
     }
         

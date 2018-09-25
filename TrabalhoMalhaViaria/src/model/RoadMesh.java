@@ -4,7 +4,6 @@ import controller.Observer;
 import java.util.ArrayList;
 import java.util.List;
 import controller.Observed;
-import model.roadmeshbuilder.products.CrossRoad;
 
 public class RoadMesh implements Observed {
 
@@ -13,7 +12,7 @@ public class RoadMesh implements Observed {
     private List<Road> roads = new ArrayList<>();
     private int vehicleAmount = 0;
     private int maxVehicleAmount;
-    private List<CrossRoad> crossRoads = new ArrayList<>();
+    private List<CellInterface> crossRoads = new ArrayList<>();
     private List<Observer> observers = new ArrayList<>();
 
     private static RoadMesh instance;
@@ -52,7 +51,7 @@ public class RoadMesh implements Observed {
         return YSize;
     }
 
-    public void vehicleLogInMesh() {
+    void vehicleLogInMesh() {
         vehicleAmount++;
         for(Observer o : observers) {
             o.notifiesVehicleLogInMesh(vehicleAmount);
@@ -66,27 +65,27 @@ public class RoadMesh implements Observed {
         }
     }
 
-    public int getVehiclesAmount() {
+    int getVehiclesAmount() {
         return vehicleAmount;
     }
 
-    public CrossRoad searchCrossRoad(Coordinate coordinate) {
-        for(CrossRoad crossRoad : crossRoads) {
+    public CellInterface searchCrossRoad(Coordinate coordinate) {
+        for(CellInterface crossRoad : crossRoads) {
             if(crossRoad.getCoordinate().equals(coordinate))
                 return crossRoad;
         }
         return null;
     }
     
-    public void addCrossRoad(CrossRoad crossRoad) {
+    public void addCrossRoad(CellInterface crossRoad) {
         this.crossRoads.add(crossRoad);
     }
     
-    public List<CrossRoad> getCrossRoads() {
+    public List<CellInterface> getCrossRoads() {
         return this.crossRoads;
     }
 
-    public int getMaxVehicleAmount() {
+    int getMaxVehicleAmount() {
         return maxVehicleAmount;
     }
     

@@ -4,41 +4,53 @@ import controller.Observer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import model.AbstractCell;
+import java.util.concurrent.Semaphore;
+import model.CellInterface;
 import model.Coordinate;
 import model.Vehicle;
-import model.threadstrategy.Strategy;
 
 /**
  *
  * @author Avell
  */
-public class CrossRoad extends AbstractCell {
+public class CrossRoad extends CellInterface {
 
-    private List<AbstractCell> nextCells = new ArrayList<>();
-    private AbstractCell next = null;
-    private Strategy strategy;
-
+    private List<CellInterface> nextCells = new ArrayList<>();
+    private CellInterface next = null;
+    private Semaphore mutex = new Semaphore(1);
+    
     public CrossRoad(Coordinate coordinate) {
         super.setCoordinate(coordinate);
     }
 
     @Override
     public void advanceVehicle(Vehicle vehicle) {
-        strategy.advanceVehicle(vehicle, next, this);
+        try {
+            mutex.acquire();
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+            vehicle.setCell(next);
+            next.setBusy(true);
+            this.setBusy(false);
+            mutex.release();
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
-    public void addNext(AbstractCell cell) {
+    public void addNext(CellInterface cell) {
         this.nextCells.add(cell);
     }
 
     @Override
-    public AbstractCell next() {
+    public CellInterface next() {
         Random random = new Random();
 
-        AbstractCell cell = null;
+        CellInterface cell = null;
         while (cell == null) {
             int randomPosition = random.nextInt(nextCells.size());
             if (nextCells.get(randomPosition).isNotBusy()) {
@@ -69,7 +81,4 @@ public class CrossRoad extends AbstractCell {
         }
     }
 
-    public void setStrategy(Strategy strategy) {
-        this.strategy = strategy;
-    }
 }

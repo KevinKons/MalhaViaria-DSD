@@ -1,11 +1,10 @@
 package model.roadmeshbuilder;
 
-import model.AbstractCell;
+import model.CellInterface;
 import model.Coordinate;
 import model.GeographicalOrientation;
 import model.Road;
 import model.roadmeshbuilder.products.Cell;
-import model.threadstrategy.Strategy;
 
 public abstract class RoadBuilderInterface {
 
@@ -38,37 +37,37 @@ public abstract class RoadBuilderInterface {
         }
     }
 
-    public abstract void buildInitialCellFinalCellCrossRoads(int[] coordinates, Strategy strategy);
+    public abstract void buildInitialCellFinalCellCrossRoads(int[] coordinates);
 
-    public abstract void buildRoadSize(AbstractCell initialCell, AbstractCell finalCell);
+    public abstract void buildRoadSize(CellInterface initialCell, CellInterface finalCell);
 
     void buildIntermediateCells() {
         if (road.getGeographicalOrientation() == GeographicalOrientation.NORTH) {
             int x = road.getCells()[0].getCoordinate().getX();
             int initialY = road.getCells()[0].getCoordinate().getY();
             for (int i = 1; i < road.getSize() - 1; i++) {
-                AbstractCell cell = new Cell(new Coordinate(x, initialY - i));
+                CellInterface cell = new Cell(new Coordinate(x, initialY - i));
                 road.getCells()[i] = cell;
             }
         } else if (road.getGeographicalOrientation() == GeographicalOrientation.SOUTH) {
             int x = road.getCells()[0].getCoordinate().getX();
             int initialY = road.getCells()[0].getCoordinate().getY();
             for (int i = 1; i < road.getSize() - 1; i++) {
-                AbstractCell cell = new Cell(new Coordinate(x, initialY + i));
+                CellInterface cell = new Cell(new Coordinate(x, initialY + i));
                 road.getCells()[i] = cell;
             }
         } else if (road.getGeographicalOrientation() == GeographicalOrientation.WEST) {
             int initialX = road.getCells()[0].getCoordinate().getX();
             int y = road.getCells()[0].getCoordinate().getY();
             for (int i = 1; i < road.getSize() - 1; i++) {
-                AbstractCell cell = new Cell(new Coordinate(initialX - i, y));
+                CellInterface cell = new Cell(new Coordinate(initialX - i, y));
                 road.getCells()[i] = cell;
             }
         } else if (road.getGeographicalOrientation() == GeographicalOrientation.EAST) {
             int initialX = road.getCells()[0].getCoordinate().getX();
             int y = road.getCells()[0].getCoordinate().getY();
             for (int i = 1; i < road.getSize() - 1; i++) {
-                AbstractCell cell = new Cell(new Coordinate(initialX + i, y));
+                CellInterface cell = new Cell(new Coordinate(initialX + i, y));
                 road.getCells()[i] = cell;
             }
         }

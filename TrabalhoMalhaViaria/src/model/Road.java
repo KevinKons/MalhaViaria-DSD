@@ -2,7 +2,7 @@ package model;
 
 public class Road {
  
-    private AbstractCell[] cells;
+    private CellInterface[] cells;
     private int size;
     private GeographicalOrientation orientacaoGeografica;
 
@@ -20,10 +20,10 @@ public class Road {
 
     public void setSize(int size) {
         this.size = size;
-        this.cells = new AbstractCell[size];
+        this.cells = new CellInterface[size];
     }
 
-    public AbstractCell[] getCells() {
+    public CellInterface[] getCells() {
         return cells;
     }
 }

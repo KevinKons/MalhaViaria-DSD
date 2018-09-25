@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import model.*;
-import model.threadstrategy.Strategy;
 import utils.UtilMethods;
 
 public class RoadMeshFactory {
@@ -21,7 +20,7 @@ public class RoadMeshFactory {
     private RoadMeshFactory() {
     }
 
-    public RoadMesh buildRoadMesh(String fileName, Strategy strategy) throws IOException {
+    public RoadMesh buildRoadMesh(String fileName) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(fileName + ".txt"));
 
         RoadMesh roadMesh = RoadMesh.getInstance();
@@ -38,7 +37,7 @@ public class RoadMeshFactory {
                 i++;
             } else {
                 int[] coordinates = UtilMethods.stringArrayToIntArray(line.split("\t"));
-                director.build(coordinates, strategy);
+                director.build(coordinates);
                 Road road = roadBuilder.getRoad();
                 /*setGeographicalOrientation(road, line.split("\t"));
                 defineCamposInicioEFimECruzamento(road, line.split("\t"));
