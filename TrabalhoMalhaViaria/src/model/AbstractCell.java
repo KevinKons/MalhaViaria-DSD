@@ -9,7 +9,7 @@ import controller.Observed;
  *
  * @author Avell
  */
-public abstract class CellInterface implements Observed {
+public abstract class AbstractCell implements Observed {
 
     private Coordinate coordinate;
     private boolean busy = false;
@@ -17,9 +17,9 @@ public abstract class CellInterface implements Observed {
 
     public abstract void advanceVehicle(Vehicle vehicle);
 
-    public abstract void addNext(CellInterface cell);
+    public abstract void addNext(AbstractCell cell);
 
-    public abstract CellInterface next();
+    public abstract AbstractCell next();
 
     public abstract boolean isFinalCell();
 

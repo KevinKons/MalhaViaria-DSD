@@ -1,4 +1,8 @@
-package model;
+package controller;
+
+import model.AbstractCell;
+import model.RoadMesh;
+import model.Vehicle;
 
 import java.util.List;
 import java.util.Random;
@@ -9,7 +13,7 @@ import java.util.Random;
  */
 public class InsertVehicle implements Runnable {
 
-    private List<CellInterface> insertionCells;
+    private List<AbstractCell> insertionCells;
     private int vehicleInsertionDelay;
     private final int vehicleSpeed;
 
@@ -19,7 +23,7 @@ public class InsertVehicle implements Runnable {
      * @param vehicleInsertionDelay
      * @param vehicleSpeed
      */
-    public InsertVehicle(List<CellInterface> insertionCells, int vehicleInsertionDelay, int vehicleSpeed) {
+    public InsertVehicle(List<AbstractCell> insertionCells, int vehicleInsertionDelay, int vehicleSpeed) {
         this.insertionCells = insertionCells;
         this.vehicleInsertionDelay = vehicleInsertionDelay;
         this.vehicleSpeed = vehicleSpeed;
@@ -34,7 +38,7 @@ public class InsertVehicle implements Runnable {
         while (roadMesh.getVehiclesAmount() < roadMesh.getMaxVehicleAmount()) {
             Vehicle vehicle = new Vehicle(vehicleSpeed);
 
-            CellInterface cell = null;
+            AbstractCell cell = null;
             while (cell == null) {
                 int randomPosition = random.nextInt(insertionCells.size());
                 if (insertionCells.get(randomPosition).isNotBusy()) {

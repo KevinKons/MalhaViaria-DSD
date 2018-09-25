@@ -1,6 +1,7 @@
 package model.roadmeshbuilder;
 
 import model.Road;
+import model.threadstrategy.Strategy;
 
 public class Director {
 
@@ -10,10 +11,10 @@ public class Director {
         this.roadBuilder = builder;
     }
 
-    public void build(int[] coordinates) {
+    public void build(int[] coordinates, Strategy strategy) {
         roadBuilder.setRoad(new Road());
         roadBuilder.buildGeographicalOrientation(coordinates);
-        roadBuilder.buildInitialCellFinalCellCrossRoads(coordinates);
+        roadBuilder.buildInitialCellFinalCellCrossRoads(coordinates, strategy);
         roadBuilder.buildIntermediateCells();
         roadBuilder.setNexts();
     }

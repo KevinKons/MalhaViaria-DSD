@@ -6,8 +6,6 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -18,12 +16,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumnModel;
 import controller.Observer;
 import javax.swing.JRadioButton;
-import model.CellInterface;
+import model.AbstractCell;
 import controller.RoadMeshInterfaceController;
 import java.awt.GridLayout;
 import javax.swing.ButtonGroup;
@@ -177,7 +173,7 @@ public class MainFrame extends JFrame implements Observer {
     }
 
     @Override
-    public void notificaCriacaoDeMalha(int tamanhoX, int tamanhoY, List<CellInterface[]> road, List<CellInterface> crossRoads) {
+    public void notificaCriacaoDeMalha(int tamanhoX, int tamanhoY, List<AbstractCell[]> road, List<AbstractCell> crossRoads) {
         MalhaViariaCellRenderer malhaViariaCellRenderer = new MalhaViariaCellRenderer();
         tbRoadMesh.setDefaultRenderer(Object.class, malhaViariaCellRenderer);
         tbRoadMesh.setRowHeight(20);
@@ -195,9 +191,9 @@ public class MainFrame extends JFrame implements Observer {
 
     }
 
-    private void setRoads(List<CellInterface[]> roads) {
-        for (CellInterface[] road : roads) {
-            for (CellInterface cell : road) {
+    private void setRoads(List<AbstractCell[]> roads) {
+        for (AbstractCell[] road : roads) {
+            for (AbstractCell cell : road) {
                 cell.addObserver(this);
 
                 JLabel label = new JLabel();
@@ -226,8 +222,8 @@ public class MainFrame extends JFrame implements Observer {
         tbRoadMesh.repaint();
     }
 
-    private void setCrossRoads(List<CellInterface> crossRoads) {
-        for (CellInterface crossRoad : crossRoads) {
+    private void setCrossRoads(List<AbstractCell> crossRoads) {
+        for (AbstractCell crossRoad : crossRoads) {
             crossRoad.addObserver(this);
 
             JLabel label = new JLabel();

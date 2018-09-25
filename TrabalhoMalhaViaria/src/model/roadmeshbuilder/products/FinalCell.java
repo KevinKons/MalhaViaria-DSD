@@ -1,6 +1,6 @@
 package model.roadmeshbuilder.products;
 
-import model.CellInterface;
+import model.AbstractCell;
 import model.Coordinate;
 import model.Vehicle;
 
@@ -8,9 +8,9 @@ import model.Vehicle;
  *
  * @author Avell
  */
-public class FinalCell extends CellInterface {
+public class FinalCell extends AbstractCell {
 
-    private CellInterface next;
+    private AbstractCell next;
 
     public FinalCell(Coordinate coordinate) {
         super.setCoordinate(coordinate);
@@ -30,12 +30,12 @@ public class FinalCell extends CellInterface {
     }
 
     @Override
-    public void addNext(CellInterface cell) {
+    public void addNext(AbstractCell cell) {
         this.next = cell;
     }
 
     @Override
-    public CellInterface next() {
+    public AbstractCell next() {
         return next;
     }
 

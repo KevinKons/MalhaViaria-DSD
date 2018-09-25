@@ -6,6 +6,10 @@ import java.util.List;
 
 import model.*;
 import model.roadmeshbuilder.RoadMeshFactory;
+import model.roadmeshbuilder.products.CrossRoad;
+import model.threadstrategy.MonitorStrategy;
+import model.threadstrategy.SemaphoreStrategy;
+import model.threadstrategy.Strategy;
 
 public class RoadMeshController implements RoadMeshInterfaceController {
 
@@ -32,34 +36,46 @@ public class RoadMeshController implements RoadMeshInterfaceController {
 
     /**
      * Create the road mesh
-      * @param modeSelection represents either is mutex or synchronized
-     * @param vehicleMaxAmount represents the max quantity of vehicles
-     * @param vehicleSpeed is the vehicle speed on the road mesh
+     *
+     * @param modeSelection         represents either is mutex or synchronized
+     * @param vehicleMaxAmount      represents the max quantity of vehicles
+     * @param vehicleSpeed          is the vehicle speed on the road mesh
      * @param vehicleInsertionSpeed is the delay of vehicle insertion
      */
     @Override
     public void criarMalhaViaria(int modeSelection, int vehicleMaxAmount, int vehicleSpeed, int vehicleInsertionSpeed) {
         try {
-            roadMesh = RoadMeshFactory.getInstance().buildRoadMesh(opcoesDeMalha[malhaSelecionada]);
+            Strategy strategy;
+            if (modeSelection == 0) {
+                strategy = new SemaphoreStrategy();
+            } else {
+                strategy = new MonitorStrategy();
+            }
+
+            roadMesh = RoadMeshFactory.getInstance().buildRoadMesh(opcoesDeMalha[malhaSelecionada], strategy);
             roadMesh.setMaxVehicleAmount(vehicleMaxAmount);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
 
-        List<CellInterface[]> roads = new ArrayList<>();
+        List<AbstractCell[]> roads = new ArrayList<>();
         for (Road road : roadMesh.getRoads()) {
-            CellInterface[] returnRoads = new CellInterface[road.getSize()];
+            AbstractCell[] returnRoads = new AbstractCell[road.getSize()];
             int i = 0;
-            for (CellInterface cell : road.getCells()) {
+            for (AbstractCell cell : road.getCells()) {
                 returnRoads[i] = cell;
                 i++;
             }
             roads.add(returnRoads);
         }
         for (Observer o : observadores) {
-            o.notificaCriacaoDeMalha(roadMesh.getXSize(), roadMesh.getYSize(), roads, roadMesh.getCrossRoads());
+            List<AbstractCell> crossRoads = new ArrayList<>();
+            for(CrossRoad crossRoad : roadMesh.getCrossRoads()) {
+                crossRoads.add(crossRoad);
+            }
+            o.notificaCriacaoDeMalha(roadMesh.getXSize(), roadMesh.getYSize(), roads, crossRoads);
         }
-        
+
         startSimulation(vehicleInsertionSpeed, vehicleSpeed);
     }
 
@@ -90,10 +106,10 @@ public class RoadMeshController implements RoadMeshInterfaceController {
 //        cell1.setBusy(true);
     }
 
-    private List<CellInterface> findInsertionCells() {
-        List<CellInterface> insertionCells = new ArrayList<>();
+    private List<AbstractCell> findInsertionCells() {
+        List<AbstractCell> insertionCells = new ArrayList<>();
 
-        for(CellInterface c : roadMesh.getRoads().get(1).getCells()) {
+        for (AbstractCell c : roadMesh.getRoads().get(1).getCells()) {
             System.out.println(c.getCoordinate().toString());
         }
 
