@@ -27,6 +27,7 @@ public class RoadMeshFactory {
         Director director = new Director(roadBuilder);
 
         RoadMesh roadMesh = RoadMesh.getInstance();
+        roadMesh.init();
         int i = 0;
         String line;
         while ((line = reader.readLine()) != null) {

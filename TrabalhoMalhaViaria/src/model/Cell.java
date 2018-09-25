@@ -16,8 +16,8 @@ public class Cell extends AbstractCell {
     public void advanceVehicle(Vehicle vehicle) {
         if(this.next.isNotBusy()) {
             vehicle.setCell(this.next);
-            this.next.setBusy(true);
-            super.setBusy(false);
+            this.next.setBusy(true, vehicle.getColor());
+            super.setBusy(false, vehicle.getColor());
         }
     }
 

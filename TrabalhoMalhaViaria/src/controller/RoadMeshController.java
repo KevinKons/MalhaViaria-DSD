@@ -80,11 +80,12 @@ public class RoadMeshController implements RoadMeshInterfaceController {
         this.malhaSelecionada = indexMalhaSelecionada;
     }
 
+    private InsertVehicle insertVehicle;
     /**
      * Start put vehicles on the road mesh
      */
     private void startSimulation() {
-        InsertVehicle insertVehicle = new InsertVehicle(findInsertionCells());
+        insertVehicle = new InsertVehicle(findInsertionCells());
         Thread insertVehicleThread = new Thread(insertVehicle);
         insertVehicleThread.start();
 
@@ -99,7 +100,16 @@ public class RoadMeshController implements RoadMeshInterfaceController {
 
     @Override
     public void stopSimulation() {
+        insertVehicle.setExecuting(false);
+    }
 
+    @Override
+    public void simulationEnded() {
+        roadMesh.setRoads(null);
+        roadMesh.setCrossRoads(null);
+        roadMesh.setObservers(null);
+
+        System.out.println(roadMesh.getRoads() != null);
     }
 
     private List<AbstractCell> findInsertionCells() {

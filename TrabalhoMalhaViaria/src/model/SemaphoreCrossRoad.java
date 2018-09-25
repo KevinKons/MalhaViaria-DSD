@@ -19,9 +19,10 @@ public class SemaphoreCrossRoad extends CrossRoad {
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
+            System.out.println("passei pelo cruzamento " + super.getCoordinate().toString());
             vehicle.setCell(next);
-            next.setBusy(true);
-            this.setBusy(false);
+            next.setBusy(true, vehicle.getColor());
+            this.setBusy(false, vehicle.getColor());
             mutex.release();
         } catch (InterruptedException ex) {
             ex.printStackTrace();

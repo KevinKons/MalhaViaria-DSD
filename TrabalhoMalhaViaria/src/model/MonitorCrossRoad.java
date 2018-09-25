@@ -14,7 +14,7 @@ public class MonitorCrossRoad extends CrossRoad {
             ex.printStackTrace();
         }
         vehicle.setCell(next);
-        next.setBusy(true);
-        this.setBusy(false);
+        next.setBusy(true, vehicle.getColor());
+        this.setBusy(false, vehicle.getColor());
     }
 }

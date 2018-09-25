@@ -48,11 +48,11 @@ public abstract class CrossRoad extends AbstractCell {
     }
     
     @Override
-    public void setBusy(boolean busy) {
-        super.setBusy(busy);
+    public void setBusy(boolean busy, Colors color) {
+        super.setBusy(busy, color);
         if (busy) {
             for (Observer o : super.getObservers()) {
-                o.notifiesBusyCell(super.getCoordinate().getX(), super.getCoordinate().getY());
+                o.notifiesBusyCell(super.getCoordinate().getX(), super.getCoordinate().getY(), color.toString());
             }
         } else {
             for (Observer o : super.getObservers()) {

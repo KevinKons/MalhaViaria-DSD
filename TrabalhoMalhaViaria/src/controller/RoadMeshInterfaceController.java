@@ -12,4 +12,5 @@ public interface RoadMeshInterfaceController extends Observed {
     String[] getRoadMeshOptions();
     void selecionaMalha(int selectedIndex);
     void stopSimulation();
+    void simulationEnded();
 }

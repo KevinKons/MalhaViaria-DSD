@@ -1,4 +1,8 @@
-package model;
+package controller;
+
+import model.AbstractCell;
+import model.RoadMesh;
+import model.Vehicle;
 
 import java.util.List;
 import java.util.Random;
@@ -25,7 +29,8 @@ public class InsertVehicle implements Runnable {
         Random random = new Random();
         // Insert the vehicles while the number of vehicles is lower then the quantity set by user.
         while (isExecuting) {
-            System.out.println(roadMesh.getVehiclesAmount() <= roadMesh.getMinVehicleAmount());
+            try { Thread.sleep(100); } catch (InterruptedException e) {e.printStackTrace(); }
+
             if (roadMesh.getVehiclesAmount() <= roadMesh.getMinVehicleAmount()) {
                 Vehicle vehicle = new Vehicle();
 
@@ -37,7 +42,7 @@ public class InsertVehicle implements Runnable {
                     }
                 }
                 vehicle.setCell(cell);
-                cell.setBusy(true);
+                cell.setBusy(true, vehicle.getColor());
 
                 Thread veiculoThread = new Thread(vehicle);
                 veiculoThread.start();
@@ -45,11 +50,14 @@ public class InsertVehicle implements Runnable {
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException ex) {
-                    System.out.println("excecao");
                     ex.printStackTrace();
                 }
             }
+
         }
     }
 
+    public void setExecuting(boolean executing) {
+        isExecuting = executing;
+    }
 }

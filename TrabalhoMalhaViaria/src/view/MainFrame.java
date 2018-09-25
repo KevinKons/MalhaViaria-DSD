@@ -24,6 +24,8 @@ import controller.RoadMeshInterfaceController;
 import java.awt.GridLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JTextField;
+
+import model.Colors;
 import model.RoadMesh;
 
 /**
@@ -157,6 +159,9 @@ public class MainFrame extends JFrame implements Observer {
         
         Observer mainFrame = this;
         btStartSimulation.addActionListener(e -> {
+            if(tbRoadMesh == null) {
+                tbRoadMesh = new JTable();
+            }
             int modeSelection = 0;
             if (rbtSynchronizedMode.isSelected()) {
                 modeSelection = 1;
@@ -170,6 +175,7 @@ public class MainFrame extends JFrame implements Observer {
 
         btStopSimulation.addActionListener( e -> {
             controller.stopSimulation();
+            btStopSimulation.setEnabled(false);
         });
     }
 
@@ -210,9 +216,25 @@ public class MainFrame extends JFrame implements Observer {
     }
 
     @Override
-    public void notifiesBusyCell(int x, int y) {
+    public void notifiesBusyCell(int x, int y, String color) {
         JLabel cell = (JLabel) tableModel.getValueAt(y, x);
-        cell.setBackground(Color.red);
+
+        Color colorAux = null;
+        if(color == "BLUE") {
+            colorAux = Color.blue;
+        } else if (color == "RED") {
+            colorAux = Color.red;
+        } else if (color == "BLACK") {
+            colorAux = Color.black;
+        } else if (color == "MAGENTA") {
+            colorAux = Color.magenta;
+        } else if (color == "CYAN") {
+            colorAux = Color.cyan;
+        } else if (color == "GREEN") {
+            colorAux = Color.green;
+        }
+
+        cell.setBackground(colorAux);
         tbRoadMesh.repaint();
     }
 
@@ -253,6 +275,34 @@ public class MainFrame extends JFrame implements Observer {
     @Override
     public void notifiesVehicleLogInMesh(int vehicleAmount) {
         lbVehicleCurrentAmount.setText("Vehicles count: " + vehicleAmount);
+    }
+
+    @Override
+    public void notifiesEndOfSimulation() {
+        btStartSimulation.setEnabled(true);
+
+//        for(int i = 0; i < tableModel.getRowCount(); i++) {
+//            for(int j = 0; j < tableModel.getColumnCount(); j++) {
+//                JLabel l = new JLabel();
+//
+//
+//                tbRoadMesh.add(l);
+//                tableModel.setValueAt(l, i, j);
+//            }
+//        }
+
+
+        jpRoadMesh.remove(tbRoadMesh);
+        tbRoadMesh = new JTable();
+        tableModel = new RoadMeshTableModel();
+        tableModel.setContoller(controller);
+        jpRoadMesh.add(tbRoadMesh);
+
+
+        repaint();
+        validate();
+
+        controller.simulationEnded();
     }
 
 }

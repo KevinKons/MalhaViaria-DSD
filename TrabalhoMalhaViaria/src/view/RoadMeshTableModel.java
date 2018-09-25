@@ -17,7 +17,8 @@ public class RoadMeshTableModel extends DefaultTableModel {
         this.controle = controle;
     }
     
-    void setSize(int x, int y) {
+    void setSize(int x, int y)
+    {
         casas = new JLabel[x][y];
     }
 

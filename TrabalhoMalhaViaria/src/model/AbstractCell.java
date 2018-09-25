@@ -35,10 +35,10 @@ public abstract class AbstractCell implements Observed {
         return !busy;
     }
 
-    public void setBusy(boolean busy) {
+    public void setBusy(boolean busy, Colors color) {
         if (busy) {
             for (Observer o : observers) {
-                o.notifiesBusyCell(this.coordinate.getX(), this.coordinate.getY());
+                o.notifiesBusyCell(this.coordinate.getX(), this.coordinate.getY(), color.toString());
             }
         } else {
             for (Observer o : observers) {

@@ -17,8 +17,8 @@ public class FinalCell extends AbstractCell {
         if (next.isNotBusy()) { //Se cruzamento está vazio
             if (next.next().isNotBusy()) { //se campo após o cruzamento está vazio
                 vehicle.setCell(this.next);
-                this.next.setBusy(true);
-                super.setBusy(false);
+                this.next.setBusy(true, vehicle.getColor());
+                super.setBusy(false, vehicle.getColor());
                 
                 this.next.advanceVehicle(vehicle);
             }
