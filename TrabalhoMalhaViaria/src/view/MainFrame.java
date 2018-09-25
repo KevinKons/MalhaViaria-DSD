@@ -6,8 +6,6 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -36,8 +34,6 @@ public class MainFrame extends JFrame implements Observer {
 
     private RoadMeshInterfaceController controller = new RoadMeshController();
     private JButton btStartSimulation;
-    private JButton btStopSimulation;
-    private JPanel jpControlSimulation;
     private Container container;
     private JPanel jpMenu;
     private JPanel jpRoadMesh;
@@ -51,8 +47,12 @@ public class MainFrame extends JFrame implements Observer {
     private JRadioButton rbtSemaphoreMode;
     private JRadioButton rbtSynchronizedMode;
     private ButtonGroup buttonGroup;
-    private JTextField tfVehicleMinAmount;
-    private JLabel jbVehicleMinAmount;
+    private JTextField tfVehicleMaxAmount;
+    private JTextField tfVehicleSpeed;
+    private JTextField tfVehicleInsertionSpeed;
+    private JLabel lbVehicleMaxAmount;
+    private JLabel lbVehicleSpeed;
+    private JLabel lbInsertionVehicleSpeed;
     private JLabel lbVehicleCurrentAmount;
 
     public MainFrame() {
@@ -87,13 +87,6 @@ public class MainFrame extends JFrame implements Observer {
         btStartSimulation = new JButton("Start Simulation");
         btStartSimulation.setEnabled(false);
 
-        btStopSimulation = new JButton("Stop Simulation");
-        btStopSimulation.setEnabled(false);
-
-        jpControlSimulation = new JPanel(new GridLayout(2, 1));
-        jpControlSimulation.add(btStartSimulation);
-        jpControlSimulation.add(btStopSimulation);
-
         jlRoadMeshSelector = new JList(controller.getRoadMeshOptions());
         jlRoadMeshSelector.setToolTipText("Select a Road Mesh");
         jlRoadMeshSelector.setVisibleRowCount(controller.getRoadMeshOptions().length);
@@ -104,7 +97,7 @@ public class MainFrame extends JFrame implements Observer {
         jpScrollPane.setBorder(new TitledBorder("Road Mesh Selection"));
 
         rbtSemaphoreMode = new JRadioButton("Semaphore Mode", true);
-        rbtSynchronizedMode = new JRadioButton("Monitor Mode");
+        rbtSynchronizedMode = new JRadioButton("Synchronized Mode");
         buttonGroup = new ButtonGroup();
         buttonGroup.add(rbtSemaphoreMode);
         buttonGroup.add(rbtSynchronizedMode);
@@ -114,19 +107,27 @@ public class MainFrame extends JFrame implements Observer {
         jpModeSelection.add(rbtSemaphoreMode);
         jpModeSelection.add(rbtSynchronizedMode);
 
-        tfVehicleMinAmount = new JTextField("15");
+        tfVehicleMaxAmount = new JTextField("20");
+        tfVehicleSpeed = new JTextField("500");
+        tfVehicleInsertionSpeed = new JTextField("1000");
 
-        jbVehicleMinAmount = new JLabel("Vehicle min amount");
+        lbVehicleMaxAmount = new JLabel("Vehicle max amount");
+        lbInsertionVehicleSpeed = new JLabel("Vehicle insertion speed");
+        lbVehicleSpeed = new JLabel("Vehicle speed");
 
         jpVehicleSettings = new JPanel(new GridLayout(3, 2));
         jpVehicleSettings.setBorder(new TitledBorder("Vehicle Settings"));
-        jpVehicleSettings.add(jbVehicleMinAmount);
-        jpVehicleSettings.add(tfVehicleMinAmount);
+        jpVehicleSettings.add(lbVehicleMaxAmount);
+        jpVehicleSettings.add(tfVehicleMaxAmount);
+        jpVehicleSettings.add(lbInsertionVehicleSpeed);
+        jpVehicleSettings.add(tfVehicleInsertionSpeed);
+        jpVehicleSettings.add(lbVehicleSpeed);
+        jpVehicleSettings.add(tfVehicleSpeed);
 
         jpMenu.add(jpScrollPane);
         jpMenu.add(jpModeSelection);
         jpMenu.add(jpVehicleSettings);
-        jpMenu.add(jpControlSimulation);
+        jpMenu.add(btStartSimulation);
 
         lbVehicleCurrentAmount = new JLabel("Vehicles: ");
         jpInformation = new JPanel(new FlowLayout());
@@ -141,6 +142,7 @@ public class MainFrame extends JFrame implements Observer {
         tableModel.setContoller(controller);
 
         tbRoadMesh = new JTable();
+
         jpRoadMesh.add(tbRoadMesh);
 
         container.add(BorderLayout.CENTER, jpRoadMesh);
@@ -162,25 +164,17 @@ public class MainFrame extends JFrame implements Observer {
             if (rbtSynchronizedMode.isSelected()) {
                 modeSelection = 1;
             }
-            int vehicleMinAmount = Integer.parseInt(tfVehicleMinAmount.getText());
-            tableModel.createRoadMesh(modeSelection, vehicleMinAmount);
+            int vehicleInsertionSpeed = Integer.parseInt(tfVehicleInsertionSpeed.getText());
+            int vehicleSpeed = Integer.parseInt(tfVehicleSpeed.getText());
+            int vehicleMaxAmount = Integer.parseInt(tfVehicleMaxAmount.getText());
+            tableModel.criarTabuleiro(modeSelection, vehicleMaxAmount, vehicleSpeed, vehicleInsertionSpeed);
             RoadMesh.getInstance().addObserver(mainFrame);
-            btStartSimulation.setEnabled(false);
-            btStopSimulation.setEnabled(true);
-        });
-
-        btStopSimulation.addActionListener(e -> {
-            controller.stopSimulation();
-            btStopSimulation.setEnabled(false);
-            btStartSimulation.setEnabled(true);
-
         });
     }
 
     @Override
-    public void notifiesRoadMeshCriation(int tamanhoX, int tamanhoY, List<AbstractCell[]> road, List<AbstractCell> crossRoads) {
+    public void notificaCriacaoDeMalha(int tamanhoX, int tamanhoY, List<AbstractCell[]> road, List<AbstractCell> crossRoads) {
         MalhaViariaCellRenderer malhaViariaCellRenderer = new MalhaViariaCellRenderer();
-
         tbRoadMesh.setDefaultRenderer(Object.class, malhaViariaCellRenderer);
         tbRoadMesh.setRowHeight(20);
 
@@ -258,11 +252,6 @@ public class MainFrame extends JFrame implements Observer {
     @Override
     public void notifiesVehicleLogInMesh(int vehicleAmount) {
         lbVehicleCurrentAmount.setText("Vehicles count: " + vehicleAmount);
-    }
-
-    @Override
-    public void notifiesSimulationStop() {
-        tableModel.cleanRoadMesh();
     }
 
 }

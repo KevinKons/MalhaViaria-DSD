@@ -12,8 +12,9 @@ public class SemaphoreStrategy implements Strategy {
     public void advanceVehicle(Vehicle vehicle, AbstractCell next, AbstractCell currentCell) {
         try {
             mutex.acquire();
+            System.out.println(vehicle + " passei");
             try {
-                Thread.sleep(200);
+                Thread.sleep(500);
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }

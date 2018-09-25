@@ -13,14 +13,14 @@ import model.threadstrategy.Strategy;
 
 public class RoadMeshController implements RoadMeshInterfaceController {
 
-    private List<Observer> observers = new ArrayList<>();
+    private List<Observer> observadores = new ArrayList<>();
     private RoadMesh roadMesh;
     private final String[] opcoesDeMalha = {"malha1", "malha2", "malha3", "malha4"};
     private int malhaSelecionada;
 
     @Override
     public void addObserver(Observer o) {
-        observers.add(o);
+        observadores.add(o);
     }
 
     @Override
@@ -38,10 +38,12 @@ public class RoadMeshController implements RoadMeshInterfaceController {
      * Create the road mesh
      *
      * @param modeSelection         represents either is mutex or synchronized
-     * @param vehicleMinAmount      represents the max quantity of vehicles
+     * @param vehicleMaxAmount      represents the max quantity of vehicles
+     * @param vehicleSpeed          is the vehicle speed on the road mesh
+     * @param vehicleInsertionSpeed is the delay of vehicle insertion
      */
     @Override
-    public void criarMalhaViaria(int modeSelection, int vehicleMinAmount) {
+    public void criarMalhaViaria(int modeSelection, int vehicleMaxAmount, int vehicleSpeed, int vehicleInsertionSpeed) {
         try {
             Strategy strategy;
             if (modeSelection == 0) {
@@ -51,7 +53,7 @@ public class RoadMeshController implements RoadMeshInterfaceController {
             }
 
             roadMesh = RoadMeshFactory.getInstance().buildRoadMesh(opcoesDeMalha[malhaSelecionada], strategy);
-            roadMesh.setMinVehicleAmount(vehicleMinAmount);
+            roadMesh.setMaxVehicleAmount(vehicleMaxAmount);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -66,15 +68,15 @@ public class RoadMeshController implements RoadMeshInterfaceController {
             }
             roads.add(returnRoads);
         }
-        for (Observer o : observers) {
+        for (Observer o : observadores) {
             List<AbstractCell> crossRoads = new ArrayList<>();
             for(CrossRoad crossRoad : roadMesh.getCrossRoads()) {
                 crossRoads.add(crossRoad);
             }
-            o.notifiesRoadMeshCriation(roadMesh.getXSize(), roadMesh.getYSize(), roads, crossRoads);
+            o.notificaCriacaoDeMalha(roadMesh.getXSize(), roadMesh.getYSize(), roads, crossRoads);
         }
 
-        startSimulation();
+        startSimulation(vehicleInsertionSpeed, vehicleSpeed);
     }
 
     @Override
@@ -87,27 +89,11 @@ public class RoadMeshController implements RoadMeshInterfaceController {
         this.malhaSelecionada = indexMalhaSelecionada;
     }
 
-    private InsertVehicle insertVehicle;
-    @Override
-    public void stopSimulation() {
-        insertVehicle.setExecuting(false);
-        roadMesh.setCrossRoads(null);
-        roadMesh.setMinVehicleAmount(0);
-        roadMesh.setRoads(null);
-        roadMesh.setXSize(0);
-        roadMesh.setYSize(0);
-        roadMesh.cleanVehicles();
-
-        for(Observer o : observers) {
-            o.notifiesSimulationStop();
-        }
-    }
-
     /**
      * Start put vehicles on the road mesh
      */
-    private void startSimulation() {
-        insertVehicle = new InsertVehicle(findInsertionCells());
+    private void startSimulation(int vehicleInsertionSpeed, int vehicleSpeed) {
+        InsertVehicle insertVehicle = new InsertVehicle(findInsertionCells(), vehicleInsertionSpeed, vehicleSpeed);
         Thread insertVehicleThread = new Thread(insertVehicle);
         insertVehicleThread.start();
 

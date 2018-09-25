@@ -20,7 +20,6 @@ public class FinalCell extends AbstractCell {
     public void advanceVehicle(Vehicle vehicle) {
         if (next.isNotBusy()) { //Se cruzamento está vazio
             if (next.next().isNotBusy()) { //se campo após o cruzamento está vazio
-
                 vehicle.setCell(this.next);
                 this.next.setBusy(true);
                 super.setBusy(false);
