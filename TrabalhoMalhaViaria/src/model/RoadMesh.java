@@ -12,9 +12,10 @@ public class RoadMesh implements Observed {
     private int YSize;
     private List<Road> roads = new ArrayList<>();
     private int vehicleAmount = 0;
-    private int maxVehicleAmount;
+    private int minVehicleAmount;
     private List<CrossRoad> crossRoads = new ArrayList<>();
     private List<Observer> observers = new ArrayList<>();
+    private List<Vehicle> vehicles = new ArrayList<>();
 
     private static RoadMesh instance;
 
@@ -52,24 +53,6 @@ public class RoadMesh implements Observed {
         return YSize;
     }
 
-    public void vehicleLogInMesh() {
-        vehicleAmount++;
-        for(Observer o : observers) {
-            o.notifiesVehicleLogInMesh(vehicleAmount);
-        }
-    }
-
-    void vehicleLogOutMesh() {
-        vehicleAmount--;
-        for(Observer o : observers) {
-            o.notifiesVehicleLogOutMesh(vehicleAmount);
-        }
-    }
-
-    public int getVehiclesAmount() {
-        return vehicleAmount;
-    }
-
     public CrossRoad searchCrossRoad(Coordinate coordinate) {
         for(CrossRoad crossRoad : crossRoads) {
             if(crossRoad.getCoordinate().equals(coordinate))
@@ -86,12 +69,12 @@ public class RoadMesh implements Observed {
         return this.crossRoads;
     }
 
-    public int getMaxVehicleAmount() {
-        return maxVehicleAmount;
+    public int getMinVehicleAmount() {
+        return minVehicleAmount;
     }
     
-    public void setMaxVehicleAmount(int maxVehicleAmount) {
-        this.maxVehicleAmount = maxVehicleAmount;
+    public void setMinVehicleAmount(int maxVehicleAmount) {
+        this.minVehicleAmount = maxVehicleAmount;
     }
 
 
@@ -100,4 +83,37 @@ public class RoadMesh implements Observed {
         this.observers.add(o);
     }
 
+
+    public void setRoads(List<Road> roads) {
+        this.roads = roads;
+    }
+
+    public void setCrossRoads(List<CrossRoad> crossRoads) {
+        this.crossRoads = crossRoads;
+    }
+
+    public void addVehicle(Vehicle vehicle) {
+        this.vehicles.add(vehicle);
+
+        for(Observer o : observers) {
+            o.notifiesVehicleLogInMesh(vehicles.size());
+        }
+    }
+
+    public void removeVehicle(Vehicle vehicle) {
+        this.vehicles.remove(vehicle);
+
+        for(Observer o : observers) {
+            o.notifiesVehicleLogOutMesh(vehicles.size());
+        }
+    }
+
+    public List<Vehicle> getVehicles() {
+        return vehicles;
+    }
+
+    public void cleanVehicles() {
+        for(Vehicle v : vehicles) {
+        }
+    }
 }

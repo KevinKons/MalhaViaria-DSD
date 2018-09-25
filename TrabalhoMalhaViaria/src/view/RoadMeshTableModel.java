@@ -48,8 +48,12 @@ public class RoadMeshTableModel extends DefaultTableModel {
         fireTableStructureChanged();
     }
 
-    void criarTabuleiro(int modeSelection, int vehicleMaxAmount, int vehicleSpeed, int vehicleInsertionSpeed) {
-        controle.criarMalhaViaria(modeSelection, vehicleMaxAmount, vehicleSpeed, vehicleInsertionSpeed);
+    void createRoadMesh(int modeSelection, int vehicleMinAmount) {
+        controle.criarMalhaViaria(modeSelection, vehicleMinAmount);
         fireTableRowsInserted(getRowCount(), getRowCount());
+    }
+
+    public void cleanRoadMesh() {
+        casas = null;
     }
 }

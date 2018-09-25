@@ -7,7 +7,7 @@ public class MonitorStrategy implements Strategy {
 
     public synchronized void advanceVehicle(Vehicle vehicle, AbstractCell next, AbstractCell currentCell) {
         try {
-            Thread.sleep(500);
+            Thread.sleep(200);
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
