@@ -1,56 +1,36 @@
 package model;
 
 import controller.Observer;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
-import model.CellInterface;
-import model.Coordinate;
-import model.Vehicle;
 
 /**
  *
  * @author Avell
  */
-public class CrossRoad extends CellInterface {
+public abstract class CrossRoad extends AbstractCell {
 
-    private List<CellInterface> nextCells = new ArrayList<>();
-    private CellInterface next = null;
+    private List<AbstractCell> nextCells = new ArrayList<>();
+    protected AbstractCell next = null;
     private Semaphore mutex = new Semaphore(1);
-    
+
     public CrossRoad(Coordinate coordinate) {
         super.setCoordinate(coordinate);
     }
 
     @Override
-    public void advanceVehicle(Vehicle vehicle) {
-        try {
-            mutex.acquire();
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-            vehicle.setCell(next);
-            next.setBusy(true);
-            this.setBusy(false);
-            mutex.release();
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    @Override
-    public void addNext(CellInterface cell) {
+    public void addNext(AbstractCell cell) {
         this.nextCells.add(cell);
     }
 
     @Override
-    public CellInterface next() {
+    public AbstractCell next() {
         Random random = new Random();
 
-        CellInterface cell = null;
+        AbstractCell cell = null;
         while (cell == null) {
             int randomPosition = random.nextInt(nextCells.size());
             if (nextCells.get(randomPosition).isNotBusy()) {

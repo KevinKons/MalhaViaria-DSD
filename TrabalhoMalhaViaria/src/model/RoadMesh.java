@@ -11,8 +11,8 @@ public class RoadMesh implements Observed {
     private int YSize;
     private List<Road> roads = new ArrayList<>();
     private int vehicleAmount = 0;
-    private int maxVehicleAmount;
-    private List<CellInterface> crossRoads = new ArrayList<>();
+    private int minVehicleAmount;
+    private List<AbstractCell> crossRoads = new ArrayList<>();
     private List<Observer> observers = new ArrayList<>();
 
     private static RoadMesh instance;
@@ -69,28 +69,28 @@ public class RoadMesh implements Observed {
         return vehicleAmount;
     }
 
-    public CellInterface searchCrossRoad(Coordinate coordinate) {
-        for(CellInterface crossRoad : crossRoads) {
+    public AbstractCell searchCrossRoad(Coordinate coordinate) {
+        for(AbstractCell crossRoad : crossRoads) {
             if(crossRoad.getCoordinate().equals(coordinate))
                 return crossRoad;
         }
         return null;
     }
     
-    public void addCrossRoad(CellInterface crossRoad) {
+    public void addCrossRoad(AbstractCell crossRoad) {
         this.crossRoads.add(crossRoad);
     }
     
-    public List<CellInterface> getCrossRoads() {
+    public List<AbstractCell> getCrossRoads() {
         return this.crossRoads;
     }
 
-    int getMaxVehicleAmount() {
-        return maxVehicleAmount;
+    int getMinVehicleAmount() {
+        return minVehicleAmount;
     }
     
-    public void setMaxVehicleAmount(int maxVehicleAmount) {
-        this.maxVehicleAmount = maxVehicleAmount;
+    public void setMinVehicleAmount(int minVehicleAmount) {
+        this.minVehicleAmount = minVehicleAmount;
     }
 
 

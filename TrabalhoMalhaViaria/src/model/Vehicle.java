@@ -1,21 +1,19 @@
 package model;
 
+import java.util.Random;
+
 public class Vehicle implements Runnable {
 
-    private int speed;
-    private CellInterface cell;
+    private AbstractCell cell;
 
-    public Vehicle(int velocity) {
-        this.speed = velocity;
-    }
-    
     @Override
     public void run() {
         RoadMesh roadMesh = RoadMesh.getInstance();
+        Random random = new Random();
         while(!cell.isExitCell()) {
             cell.advanceVehicle(this);
             try {
-                Thread.sleep(speed);
+                Thread.sleep(random.nextInt(150) + 450);
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
@@ -24,11 +22,11 @@ public class Vehicle implements Runnable {
         roadMesh.vehicleLogOutMesh();
     }
 
-    public CellInterface getCell() {
+    public AbstractCell getCell() {
         return cell;
     }
 
-    public void setCell(CellInterface cell) {
+    public void setCell(AbstractCell cell) {
         this.cell = cell;
     }
         

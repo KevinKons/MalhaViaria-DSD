@@ -1,6 +1,6 @@
 package model.roadmeshfactory;
 
-import model.CellInterface;
+import model.AbstractCell;
 import model.Coordinate;
 import model.GeographicalOrientation;
 import model.RoadMesh;
@@ -8,13 +8,13 @@ import model.Cell;
 import model.CrossRoad;
 import model.FinalCell;
 
-public class RoadBuilder extends RoadBuilderInterface {
+public abstract class RoadBuilder extends RoadBuilderInterface {
 
     @Override
     public void buildInitialCellFinalCellCrossRoads(int[] coordinates) {
         RoadMesh roadMesh = RoadMesh.getInstance();
 
-        CellInterface initialCell;
+        AbstractCell initialCell;
         if (coordinates[0] == 0 || coordinates[0] == roadMesh.getXSize() - 1
                 || coordinates[1] == 0 || coordinates[1] == roadMesh.getYSize() - 1) {
 
@@ -35,16 +35,14 @@ public class RoadBuilder extends RoadBuilderInterface {
             se não existe, cria o cruzamento e adiciona crossRoad na malha viaria
             Logo após set initialCell como proximo desse cruzamento
              */
-            Coordinate crossRoadCoordinate = new Coordinate(coordinates[0], coordinates[1]);
-            CellInterface crossRoad = roadMesh.searchCrossRoad(crossRoadCoordinate);
-            if (crossRoad == null) {
-                crossRoad = new CrossRoad(crossRoadCoordinate);
-                roadMesh.addCrossRoad(crossRoad);
-            }
-            crossRoad.addNext(initialCell);
+
+            AbstractCell crossRoad = createCrossRoad(coordinates[0], coordinates[1]);
+            if (crossRoad != null)
+                crossRoad.addNext(initialCell);
+
         }
 
-        CellInterface finalCell;
+        AbstractCell finalCell;
         if (coordinates[2] == 0 || coordinates[2] == roadMesh.getXSize() - 1
                 || coordinates[3] == 0 || coordinates[3] == roadMesh.getYSize() - 1) {
 
@@ -66,13 +64,10 @@ public class RoadBuilder extends RoadBuilderInterface {
             Logo após crossRoad como proimo de finalCell, indicando que a ultima
             célula da via leva ao cruzamento
              */
-            Coordinate crossRoadCoordinate = new Coordinate(coordinates[2], coordinates[3]);
-            CellInterface crossRoad = roadMesh.searchCrossRoad(crossRoadCoordinate);
-            if (crossRoad == null) {
-                crossRoad = new CrossRoad(crossRoadCoordinate);
-                roadMesh.addCrossRoad(crossRoad);
-            }
-            finalCell.addNext(crossRoad);
+
+            AbstractCell crossRoad = createCrossRoad(coordinates[2], coordinates[3]);
+            if (crossRoad != null)
+                finalCell.addNext(crossRoad);
 
         }
         buildRoadSize(initialCell, finalCell);
@@ -81,8 +76,10 @@ public class RoadBuilder extends RoadBuilderInterface {
         road.getCells()[road.getSize() - 1] = finalCell;
     }
 
+    protected abstract AbstractCell createCrossRoad(int x, int y);
+
     @Override
-    public void buildRoadSize(CellInterface initialCell, CellInterface finalCell) {
+    public void buildRoadSize(AbstractCell initialCell, AbstractCell finalCell) {
         int xInitialCell = initialCell.getCoordinate().getX();
         int yInitialCell = initialCell.getCoordinate().getY();
         int xFinalCell = finalCell.getCoordinate().getX();

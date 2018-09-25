@@ -13,8 +13,6 @@ import utils.UtilMethods;
 public class RoadMeshFactory {
 
     private static RoadMeshFactory ourInstance = new RoadMeshFactory();
-    private RoadBuilder roadBuilder = new RoadBuilder();
-    private Director director = new Director(roadBuilder);
 
     public static RoadMeshFactory getInstance() {
         return ourInstance;
@@ -23,8 +21,10 @@ public class RoadMeshFactory {
     private RoadMeshFactory() {
     }
 
-    public RoadMesh buildRoadMesh(String fileName) throws IOException {
+    public RoadMesh buildRoadMesh(String fileName, RoadBuilderInterface roadBuilder) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(fileName + ".txt"));
+
+        Director director = new Director(roadBuilder);
 
         RoadMesh roadMesh = RoadMesh.getInstance();
         int i = 0;
@@ -47,6 +47,7 @@ public class RoadMeshFactory {
                 defineCamposIntermediarios(road);
                 defineProximos(road);*/
                 roadMesh.addRoad(road);
+
             }
         }
         return roadMesh;

@@ -6,8 +6,6 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -18,12 +16,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumnModel;
 import controller.Observer;
 import javax.swing.JRadioButton;
-import model.CellInterface;
+import model.AbstractCell;
 import controller.RoadMeshInterfaceController;
 import java.awt.GridLayout;
 import javax.swing.ButtonGroup;
@@ -38,6 +34,8 @@ public class MainFrame extends JFrame implements Observer {
 
     private RoadMeshInterfaceController controller = new RoadMeshController();
     private JButton btStartSimulation;
+    private JButton btStopSimulation;
+    private JPanel jpControlSimulation;
     private Container container;
     private JPanel jpMenu;
     private JPanel jpRoadMesh;
@@ -51,12 +49,8 @@ public class MainFrame extends JFrame implements Observer {
     private JRadioButton rbtSemaphoreMode;
     private JRadioButton rbtSynchronizedMode;
     private ButtonGroup buttonGroup;
-    private JTextField tfVehicleMaxAmount;
-    private JTextField tfVehicleSpeed;
-    private JTextField tfVehicleInsertionSpeed;
-    private JLabel lbVehicleMaxAmount;
-    private JLabel lbVehicleSpeed;
-    private JLabel lbInsertionVehicleSpeed;
+    private JTextField tfVehicleMinAmount;
+    private JLabel lbVehicleMinAmount;
     private JLabel lbVehicleCurrentAmount;
 
     public MainFrame() {
@@ -91,6 +85,13 @@ public class MainFrame extends JFrame implements Observer {
         btStartSimulation = new JButton("Start Simulation");
         btStartSimulation.setEnabled(false);
 
+        btStopSimulation = new JButton("Stop Simulation");
+        btStopSimulation.setEnabled(false);
+
+        jpControlSimulation = new JPanel(new GridLayout(2, 1));
+        jpControlSimulation.add(btStartSimulation);
+        jpControlSimulation.add(btStopSimulation);
+
         jlRoadMeshSelector = new JList(controller.getRoadMeshOptions());
         jlRoadMeshSelector.setToolTipText("Select a Road Mesh");
         jlRoadMeshSelector.setVisibleRowCount(controller.getRoadMeshOptions().length);
@@ -111,27 +112,19 @@ public class MainFrame extends JFrame implements Observer {
         jpModeSelection.add(rbtSemaphoreMode);
         jpModeSelection.add(rbtSynchronizedMode);
 
-        tfVehicleMaxAmount = new JTextField("20");
-        tfVehicleSpeed = new JTextField("500");
-        tfVehicleInsertionSpeed = new JTextField("1000");
+        tfVehicleMinAmount = new JTextField("20");
 
-        lbVehicleMaxAmount = new JLabel("Vehicle max amount");
-        lbInsertionVehicleSpeed = new JLabel("Vehicle insertion speed");
-        lbVehicleSpeed = new JLabel("Vehicle speed");
+        lbVehicleMinAmount = new JLabel("Vehicle min amount");
 
         jpVehicleSettings = new JPanel(new GridLayout(3, 2));
         jpVehicleSettings.setBorder(new TitledBorder("Vehicle Settings"));
-        jpVehicleSettings.add(lbVehicleMaxAmount);
-        jpVehicleSettings.add(tfVehicleMaxAmount);
-        jpVehicleSettings.add(lbInsertionVehicleSpeed);
-        jpVehicleSettings.add(tfVehicleInsertionSpeed);
-        jpVehicleSettings.add(lbVehicleSpeed);
-        jpVehicleSettings.add(tfVehicleSpeed);
+        jpVehicleSettings.add(lbVehicleMinAmount);
+        jpVehicleSettings.add(tfVehicleMinAmount);
 
         jpMenu.add(jpScrollPane);
         jpMenu.add(jpModeSelection);
         jpMenu.add(jpVehicleSettings);
-        jpMenu.add(btStartSimulation);
+        jpMenu.add(jpControlSimulation);
 
         lbVehicleCurrentAmount = new JLabel("Vehicles: ");
         jpInformation = new JPanel(new FlowLayout());
@@ -168,22 +161,26 @@ public class MainFrame extends JFrame implements Observer {
             if (rbtSynchronizedMode.isSelected()) {
                 modeSelection = 1;
             }
-            int vehicleInsertionSpeed = Integer.parseInt(tfVehicleInsertionSpeed.getText());
-            int vehicleSpeed = Integer.parseInt(tfVehicleSpeed.getText());
-            int vehicleMaxAmount = Integer.parseInt(tfVehicleMaxAmount.getText());
-            tableModel.criarTabuleiro(modeSelection, vehicleMaxAmount, vehicleSpeed, vehicleInsertionSpeed);
+            int vehicleMinAmount = Integer.parseInt(tfVehicleMinAmount.getText());
+            tableModel.createRoadMesh(modeSelection, vehicleMinAmount);
             RoadMesh.getInstance().addObserver(mainFrame);
+            btStartSimulation.setEnabled(false);
+            btStopSimulation.setEnabled(true);
+        });
+
+        btStopSimulation.addActionListener( e -> {
+            controller.stopSimulation();
         });
     }
 
     @Override
-    public void notificaCriacaoDeMalha(int tamanhoX, int tamanhoY, List<CellInterface[]> road, List<CellInterface> crossRoads) {
-        MalhaViariaCellRenderer malhaViariaCellRenderer = new MalhaViariaCellRenderer();
-        tbRoadMesh.setDefaultRenderer(Object.class, malhaViariaCellRenderer);
+    public void notifiesRoadMeshCreation(int sizeX, int sizeY, List<AbstractCell[]> road, List<AbstractCell> crossRoads) {
+        RoadMeshCellRenderer roadMeshCellRenderer = new RoadMeshCellRenderer();
+        tbRoadMesh.setDefaultRenderer(Object.class, roadMeshCellRenderer);
         tbRoadMesh.setRowHeight(20);
 
         tbRoadMesh.setModel(tableModel);
-        tableModel.setSize(tamanhoX, tamanhoY);
+        tableModel.setSize(sizeX, sizeY);
 
         setRoads(road);
         setCrossRoads(crossRoads);
@@ -195,9 +192,9 @@ public class MainFrame extends JFrame implements Observer {
 
     }
 
-    private void setRoads(List<CellInterface[]> roads) {
-        for (CellInterface[] road : roads) {
-            for (CellInterface cell : road) {
+    private void setRoads(List<AbstractCell[]> roads) {
+        for (AbstractCell[] road : roads) {
+            for (AbstractCell cell : road) {
                 cell.addObserver(this);
 
                 JLabel label = new JLabel();
@@ -226,8 +223,8 @@ public class MainFrame extends JFrame implements Observer {
         tbRoadMesh.repaint();
     }
 
-    private void setCrossRoads(List<CellInterface> crossRoads) {
-        for (CellInterface crossRoad : crossRoads) {
+    private void setCrossRoads(List<AbstractCell> crossRoads) {
+        for (AbstractCell crossRoad : crossRoads) {
             crossRoad.addObserver(this);
 
             JLabel label = new JLabel();
