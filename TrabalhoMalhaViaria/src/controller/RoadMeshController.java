@@ -3,10 +3,8 @@ package controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import model.CellInterface;
-import model.RoadMesh;
-import model.Road;
-import model.InsertVehicle;
+
+import model.*;
 import model.roadmeshfactory.RoadMeshFactory;
 
 public class RoadMeshController implements RoadMeshInterfaceController {
@@ -94,6 +92,11 @@ public class RoadMeshController implements RoadMeshInterfaceController {
 
     private List<CellInterface> findInsertionCells() {
         List<CellInterface> insertionCells = new ArrayList<>();
+
+        for(CellInterface c : roadMesh.getRoads().get(1).getCells()) {
+            System.out.println(c.getCoordinate().toString());
+        }
+
         for (Road road : roadMesh.getRoads()) {
             if (road.getCells()[0].getCoordinate().getX() == 0
                     || road.getCells()[0].getCoordinate().getX() == roadMesh.getXSize() - 1

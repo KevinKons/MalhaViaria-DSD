@@ -8,7 +8,11 @@ import model.Cell;
 
 public abstract class RoadBuilderInterface {
 
-    protected Road road = new Road();
+    protected Road road;
+
+    public void setRoad(Road road) {
+        this.road = road;
+    }
 
     public Road getRoad() {
         return road;

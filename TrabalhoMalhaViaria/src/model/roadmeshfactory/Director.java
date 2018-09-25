@@ -11,6 +11,7 @@ public class Director {
     }
 
     public void build(int[] coordinates) {
+        roadBuilder.setRoad(new Road());
         roadBuilder.buildGeographicalOrientation(coordinates);
         roadBuilder.buildInitialCellFinalCellCrossRoads(coordinates);
         roadBuilder.buildIntermediateCells();
